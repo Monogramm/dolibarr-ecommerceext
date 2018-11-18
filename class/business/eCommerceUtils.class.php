@@ -20,8 +20,8 @@
  * File of class with method used by scheduled job to launch automatic synchronization
  */
 
-dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceSite.class.php');
+dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSite.class.php');
 
 
 /**

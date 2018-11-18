@@ -16,24 +16,24 @@
  * or see http://www.gnu.org/
  */
 
-dol_include_once('/ecommerceng/admin/class/data/eCommerceDict.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceCategory.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceSociete.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceProduct.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceCommande.class.php');
+dol_include_once('/ecommerceext/admin/class/data/eCommerceDict.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceCategory.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSociete.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceProduct.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceCommande.class.php');
 
-dol_include_once('/ecommerceng/includes/WooCommerce/Client.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/BasicAuth.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/HttpClient.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/HttpClientException.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/OAuth.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/Options.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/Request.php');
-dol_include_once('/ecommerceng/includes/WooCommerce/HttpClient/Response.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/Client.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/BasicAuth.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/HttpClient.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/HttpClientException.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/OAuth.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/Options.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/Request.php');
+dol_include_once('/ecommerceext/includes/WooCommerce/HttpClient/Response.php');
 
-dol_include_once('/ecommerceng/lib/eCommerce.lib.php');
+dol_include_once('/ecommerceext/lib/eCommerce.lib.php');
 
-dol_include_once('/ecommerceng/includes/WordPressClient.php');
+dol_include_once('/ecommerceext/includes/WordPressClient.php');
 
 require_once DOL_DOCUMENT_ROOT.'/categories/class/categorie.class.php';
 require_once DOL_DOCUMENT_ROOT.'/core/lib/company.lib.php';
@@ -67,17 +67,12 @@ class eCommerceRemoteAccessWoocommerce
     private $eCommerceCommande;
 
     /**
-     * Woocommerce client new API v2.
+     * Woocommerce client new API v3.
      *
      * @var Client
+     * @see http://woocommerce.github.io/woocommerce-rest-api-docs/ WooCommerce API documentation
      */
     private $client;
-    /**
-     * Woocommerce client old API v3.
-     *
-     * @var Client
-     */
-    private $clientOld;
     /**
      * WordPress client.
      *
@@ -136,8 +131,8 @@ class eCommerceRemoteAccessWoocommerce
     {
         global $langs;
 
-        $langs->load("ecommerce@ecommerceng");
-        $langs->load("woocommerce@ecommerceng");
+        $langs->load("ecommerce@ecommerceext");
+        $langs->load("woocommerce@ecommerceext");
 
         $this->db = $db;
         $this->site = $site;
@@ -180,13 +175,13 @@ class eCommerceRemoteAccessWoocommerce
      */
     public function connect()
     {
-        dol_syslog(__METHOD__ . ": Connect to API webservice_address=" . $this->site->webservice_address . " user_name=" .
-            $this->site->user_name . " user_password=" . $this->site->user_password . " for site ID {$this->site->id}", LOG_DEBUG);
         global $conf, $langs;
-
-        $response_timeout = (empty($conf->global->MAIN_USE_RESPONSE_TIMEOUT) ? 30 : $conf->global->MAIN_USE_RESPONSE_TIMEOUT);    // Response timeout
+    
+        $response_timeout = (empty($conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT) ? 600 : $conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT);    // Response timeout
         $isHTTPS = (bool) preg_match('/^https/i', $this->site->webservice_address);
 
+        dol_syslog(__METHOD__ . ": Connect to API webservice_address=" . $this->site->webservice_address . " user_name=" .
+            $this->site->user_name . " user_password=" . $this->site->user_password . " for site ID {$this->site->id}", LOG_DEBUG);
         try {
             $this->client = new Client(
                 $this->site->webservice_address,
@@ -194,24 +189,12 @@ class eCommerceRemoteAccessWoocommerce
                 $this->site->user_password,
                 [
                     'wp_api' => true,
-                    'version' => 'wc/v2',
+                    'version' => 'wc/v3',
                     'timeout' => $response_timeout,
                     'query_string_auth' => $isHTTPS,
                 ]
             );
             $this->client->get('customers', [ 'page' => 1, 'per_page' => 1 ]);
-
-            $this->clientOld = new Client(
-                $this->site->webservice_address,
-                $this->site->user_name,
-                $this->site->user_password,
-                [
-                    'version' => 'v3',
-                    'timeout' => $response_timeout,
-                    'query_string_auth' => $isHTTPS,
-                ]
-            );
-            $this->clientOld->get('customers', [ 'page' => 1, 'filter' => [ 'limit' => 1 ] ]);
         } catch (HttpClientException $fault) {
             $this->errors[] = $langs->trans('ECommerceWoocommerceConnect', $this->site->name, $fault->getCode() . ': ' . $fault->getMessage());
             dol_syslog(__METHOD__ .
@@ -225,7 +208,7 @@ class eCommerceRemoteAccessWoocommerce
                 $this->site->webservice_address,
                 $this->site->oauth_id,
                 $this->site->oauth_secret,
-                dol_buildpath('/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php', 2) . '?ecommerce_id=' . $this->site->id
+                dol_buildpath('/custom/ecommerceext/core/modules/oauth/wordpress_oauthcallback.php', 2) . '?ecommerce_id=' . $this->site->id
             );
         } catch (Exception $e) {
             $this->errors[] = $langs->trans('ECommerceWoocommerceConnect', $this->site->name, $e->getMessage());
@@ -255,23 +238,25 @@ class eCommerceRemoteAccessWoocommerce
         $last_update = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
         $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
-        $filter = ['limit' => $per_page];
+        $filter = ['per_page' => $per_page];
         // Not work with customers
-        //if (isset($fromDate) && !empty($fromDate)) $filter['updated_at_min'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayrfc');
-        //if (isset($toDate) && !empty($toDate)) $filter['updated_at_max'] = dol_print_date($toDate + (24 * 60 * 60), 'dayrfc');
+        //if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        //if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
 
         while (true) {
             try {
-                $page = $this->clientOld->get('customers',
-                    [
-                        'page' => $idxPage++,
-                        'filter' => $filter,
-                        'fields' => 'id,created_at,last_update'
-                    ]
+                $page = $this->client->get('customers',
+                    array_merge(
+                        [
+                            'page' => $idxPage++,
+                            'fields' => 'id,date_created_gmt,date_modified_gmt'
+                        ], 
+                        $filter
+                    )
                 );
             } catch (HttpClientException $fault) {
                 $this->errors[] = $langs->trans('ECommerceWoocommerceGetSocieteToUpdate', $this->site->name, $fault->getCode() . ': ' . $fault->getMessage());
@@ -281,12 +266,11 @@ class eCommerceRemoteAccessWoocommerce
                 return false;
             }
 
-            if (!isset($page->customers) || ($nbCustomers = count($page->customers)) == 0) break;
-            $page = $page->customers;
+            if (($nbCustomers = count($page)) == 0) break;
 
             foreach ($page as $customer) {
                 $id = $customer->id;
-                $date_customer = $this->getDateTimeFromGMTDateTime(!empty($customer->updated_at) ? $customer->updated_at : $customer->created_at);
+                $date_customer = $this->getDateTimeFromGMTDateTime(!empty($customer->date_modified_gmt) ? $customer->date_modified_gmt : $customer->date_created_gmt);
                 $update_customer = false;
                 if ($from_date == $date_customer) {
                     if ($this->eCommerceSociete->fetchByRemoteId($id, $this->site->id) > 0) {
@@ -336,22 +320,24 @@ class eCommerceRemoteAccessWoocommerce
         $product_variation = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
         $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
-        $filter = ['limit' => $per_page];
-        if (isset($fromDate) && !empty($fromDate)) $filter['updated_at_min'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayrfc');
-        if (isset($toDate) && !empty($toDate)) $filter['updated_at_max'] = dol_print_date($toDate + (24 * 60 * 60), 'dayrfc');
+        $filter = ['per_page' => $per_page];
+        if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
 
         while (true) {
             try {
-                $page = $this->clientOld->get('products',
-                    [
-                        'page' => $idxPage++,
-                        'filter' => $filter,
-                        'fields' => 'id,created_at,updated_at,variations'
-                    ]
+                $page = $this->client->get('products',
+                    array_merge(
+                        [
+                            'page' => $idxPage++,
+                            'fields' => 'id,date_created_gmt,date_modified_gmt,variations'
+                        ], 
+                        $filter
+                    )
                 );
             } catch (HttpClientException $fault) {
                 $this->errors[] = $langs->trans('ECommerceWoocommerceGetProductToUpdate', $this->site->name, $fault->getCode() . ': ' . $fault->getMessage());
@@ -361,13 +347,12 @@ class eCommerceRemoteAccessWoocommerce
                 return false;
             }
 
-            if (!isset($page->products) || ($nbProducts = count($page->products)) == 0) break;
-            $page = $page->products;
+            if (($nbProducts = count($page)) == 0) break;
 
             foreach ($page as $product) {
                 $id = $product->id;
                 $update = false;
-                $date_product = $this->getDateTimeFromGMTDateTime(!empty($product->updated_at) ? $product->updated_at : $product->created_at);
+                $date_product = $this->getDateTimeFromGMTDateTime(!empty($product->date_modified_gmt) ? $product->date_modified_gmt : $product->date_created_gmt);
                 $update_parent = false;
                 if ($from_date == $date_product) {
                     if ($this->eCommerceProduct->fetchByRemoteId($id, $this->site->id) > 0) {
@@ -393,7 +378,7 @@ class eCommerceRemoteAccessWoocommerce
                 // Variations
                 foreach ($product->variations as $variation) {
                     $id = $product->id . '|' . $variation->id;
-                    $date_variation = $this->getDateTimeFromGMTDateTime(!empty($variation->updated_at) ? $variation->updated_at : $variation->created_at);
+                    $date_variation = $this->getDateTimeFromGMTDateTime(!empty($variation->date_modified_gmt) ? $variation->date_modified_gmt : $variation->date_created_gmt);
                     $update_variante = false;
                     if ($from_date == $date_product) {
                         if ($this->eCommerceProduct->fetchByRemoteId($id, $this->site->id) > 0) {
@@ -456,22 +441,24 @@ class eCommerceRemoteAccessWoocommerce
         $last_update = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
         $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
-        $filter = ['limit' => $per_page];
-        if (isset($fromDate) && !empty($fromDate)) $filter['updated_at_min'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayrfc');
-        if (isset($toDate) && !empty($toDate)) $filter['updated_at_max'] = dol_print_date($toDate + (24 * 60 * 60), 'dayrfc');
+        $filter = ['per_page' => $per_page];
+        if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
 
         while (true) {
             try {
-                $page = $this->clientOld->get('orders',
-                    [
-                        'page' => $idxPage++,
-                        'filter' => $filter,
-                        'fields' => 'id,created_at,updated_at'
-                    ]
+                $page = $this->client->get('orders',
+                    array_merge(
+                        [
+                            'page' => $idxPage++,
+                            'fields' => 'id,date_created_gmt,date_modified_gmt'
+                        ], 
+                        $filter
+                    )
                 );
             } catch (HttpClientException $fault) {
                 $this->errors[] = $langs->trans('ECommerceWoocommerceGetCommandeToUpdate', $this->site->name, $fault->getCode() . ': ' . $fault->getMessage());
@@ -481,12 +468,11 @@ class eCommerceRemoteAccessWoocommerce
                 return false;
             }
 
-            if (!isset($page->orders) || ($nbOrders = count($page->orders)) == 0) break;
-            $page = $page->orders;
+            if (($nbOrders = count($page)) == 0) break;
 
             foreach ($page as $order) {
                 $id = $order->id;
-                $date_order = $this->getDateTimeFromGMTDateTime(!empty($order->updated_at) ? $order->updated_at : $order->created_at);
+                $date_order = $this->getDateTimeFromGMTDateTime(!empty($order->date_modified_gmt) ? $order->date_modified_gmt : $order->date_created_gmt);
                 $update_order = false;
                 if ($from_date == $date_order) {
                     if ($this->eCommerceCommande->fetchByRemoteId($id, $this->site->id) > 0) {
@@ -544,7 +530,7 @@ class eCommerceRemoteAccessWoocommerce
         global $conf, $langs;
 
         $companies = [];
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $requestGroups = $this->getRequestGroups($remoteObject, $nb_max_by_request, $toNb);
 
         foreach ($requestGroups as $request) {
@@ -576,7 +562,7 @@ class eCommerceRemoteAccessWoocommerce
                             'type' => 'company',
                             'name' => $company->billing->company,
                             'name_alias' => null,
-                            'email' => !empty($conf->global->ECOMMERCENG_WOOCOMMERCE_GET_EMAIL_ON_COMPANY) ? $company->email : null,
+                            'email' => !empty($conf->global->ECOMMERCE_WOOCOMMERCE_GET_EMAIL_ON_COMPANY) ? $company->email : null,
                             'email_key' => $company->email,
                             'client' => 1,
                             'vatnumber' => null,
@@ -723,7 +709,7 @@ class eCommerceRemoteAccessWoocommerce
         $remoteVariationObject = [];
         $products_last_update = [];
         $products_variation = [];
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
 
         $productImageSynchDirection = isset($this->site->parameters['product_synch_direction']['image']) ? $this->site->parameters['product_synch_direction']['image'] : '';
         $productRefSynchDirection = isset($this->site->parameters['product_synch_direction']['ref']) ? $this->site->parameters['product_synch_direction']['ref'] : '';
@@ -797,16 +783,15 @@ class eCommerceRemoteAccessWoocommerce
                             'remote_id' => $remote_id,
                             'last_update' => $last_update,
                             'fk_product_type' => ($product->virtual ? 1 : 0), // 0 (product) or 1 (service)
-                            //'ref' => $product->sku,
+                            'ref' => $product->sku,
                             'label' => $product->name,
-                            //'weight' => $product->weight,
+                            'weight' => $product->weight,
                             'price' => $product->price,
                             'envente' => empty($product->variations) ? 1 : 0,
                             'enachat' => empty($product->variations) ? 1 : 0,
                             'finished' => 1,    // 1 = manufactured, 0 = raw material
                             'canvas' => $canvas,
                             'categories' => $categories,
-                            'tax_rate' => $this->getTaxRate($product->tax_class, $product->tax_status),
                             'price_min' => $product->price,
                             'fk_country' => '',
                             'url' => $product->permalink,
@@ -814,12 +799,7 @@ class eCommerceRemoteAccessWoocommerce
                             'stock_qty' => $product->stock_quantity,
                             'is_in_stock' => $product->in_stock,   // not used
                             'extrafields' => [
-                                //"ecommerceng_wc_status_{$this->site->id}_{$conf->entity}" => $product->status,
-                                //"ecommerceng_description_{$conf->entity}" => $product->description,
-                                //"ecommerceng_short_description_{$conf->entity}" => $product->short_description,
-                                //"ecommerceng_tax_class_{$this->site->id}_{$conf->entity}" => $this->getTaxClass($product->tax_class, $product->tax_status),
                             ],
-                            //'images' => $images,
                         ];
 
                         if ($productImageSynchDirection == 'etod' || $productImageSynchDirection == 'all') {
@@ -829,19 +809,20 @@ class eCommerceRemoteAccessWoocommerce
                             $products[$remote_id]['ref'] = $product->sku;
                         }
                         if ($productDescriptionSynchDirection == 'etod' || $productDescriptionSynchDirection == 'all') {
-                            $products[$remote_id]['extrafields']["ecommerceng_description_{$conf->entity}"] = $product->description;
+                            $products[$remote_id]['extrafields']["ecommerceext_description_{$conf->entity}"] = $product->description;
                         }
                         if ($productShortDescriptionSynchDirection == 'etod' || $productShortDescriptionSynchDirection == 'all') {
-                            $products[$remote_id]['extrafields']["ecommerceng_short_description_{$conf->entity}"] = $product->short_description;
+                            $products[$remote_id]['extrafields']["ecommerceext_short_description_{$conf->entity}"] = $product->short_description;
                         }
                         if ($productWeightSynchDirection == 'etod' || $productWeightSynchDirection == 'all') {
                             $products[$remote_id]['weight'] = $product->weight;
                         }
                         if ($productTaxSynchDirection == 'etod' || $productTaxSynchDirection == 'all') {
-                            $products[$remote_id]['extrafields']["ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"] = $this->getTaxClass($product->tax_class, $product->tax_status);
+                            $products[$remote_id]['extrafields']['tax_rate'] = $this->getTaxRate($product->tax_class, $product->tax_status);
+                            $products[$remote_id]['extrafields']["ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"] = $this->getTaxClass($product->tax_class, $product->tax_status);
                         }
                         if ($productStatusSynchDirection == 'etod' || $productStatusSynchDirection == 'all') {
-                            $products[$remote_id]['extrafields']["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"] = $product->status;
+                            $products[$remote_id]['extrafields']["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"] = $product->status;
                         }
 
                         // Synch extrafields <=> metadatas
@@ -912,16 +893,13 @@ class eCommerceRemoteAccessWoocommerce
                                     'remote_id' => $remote_id,
                                     'last_update' => $last_update,
                                     'fk_product_type' => ($variation->virtual ? 1 : 0), // 0 (product) or 1 (service)
-                                    //'ref' => $variation->sku,
                                     'label' => $product->name . $attributesLabel,
-                                    //'weight' => $variation->weight,
                                     'price' => $variation->price,
                                     'envente' => 1,
                                     'enachat' => 1,
                                     'finished' => 1,    // 1 = manufactured, 0 = raw material
                                     'canvas' => $canvas,
                                     'categories' => $categories,
-                                    //'tax_rate' => $this->getTaxRate($variation->tax_class, $variation->tax_status),
                                     'price_min' => $variation->price,
                                     'fk_country' => '',
                                     'url' => $variation->permalink,
@@ -929,8 +907,6 @@ class eCommerceRemoteAccessWoocommerce
                                     'stock_qty' => $variation->stock_quantity,
                                     'is_in_stock' => $variation->in_stock,   // not used
                                     'extrafields' => [
-                                        //"ecommerceng_description_{$conf->entity}" => $variation->description,
-                                        //"ecommerceng_tax_class_{$this->site->id}_{$conf->entity}" => $this->getTaxClass($variation->tax_class, $variation->tax_status),
                                     ],
                                     //'images' => $images,
                                 ];
@@ -942,14 +918,14 @@ class eCommerceRemoteAccessWoocommerce
                                     $products[$remote_id]['ref'] = $variation->sku;
                                 }
                                 if ($productDescriptionSynchDirection == 'etod' || $productDescriptionSynchDirection == 'all') {
-                                    $products[$remote_id]['extrafields']["ecommerceng_description_{$conf->entity}"] = $variation->description;
+                                    $products[$remote_id]['extrafields']["ecommerceext_description_{$conf->entity}"] = $variation->description;
                                 }
                                 if ($productWeightSynchDirection == 'etod' || $productWeightSynchDirection == 'all') {
                                     $products[$remote_id]['weight'] = (!empty($totalWeight) ? $totalWeight : '');
                                 }
                                 if ($productTaxSynchDirection == 'etod' || $productTaxSynchDirection == 'all') {
                                     $products[$remote_id]['tax_rate'] = $this->getTaxRate($variation->tax_class, $variation->tax_status);
-                                    $products[$remote_id]['extrafields']["ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"] = $this->getTaxClass($variation->tax_class, $variation->tax_status);
+                                    $products[$remote_id]['extrafields']["ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"] = $this->getTaxClass($variation->tax_class, $variation->tax_status);
                                 }
 
                                 // Synch extrafields <=> metadatas
@@ -1007,7 +983,7 @@ class eCommerceRemoteAccessWoocommerce
         global $conf, $langs;
 
         $orders = [];
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $requestGroups = $this->getRequestGroups($remoteObject, $nb_max_by_request, $toNb);
 
         foreach ($requestGroups as $request) {
@@ -1139,7 +1115,7 @@ class eCommerceRemoteAccessWoocommerce
                     }
 
                     // Set delivery as service
-                    $shippingDisplayIfNull = (empty($conf->global->ECOMMERCENG_SHIPPING_NOT_DISPLAY_IF_NULL) ? true : false);
+                    $shippingDisplayIfNull = (empty($conf->global->ECOMMERCE_SHIPPING_NOT_DISPLAY_IF_NULL) ? true : false);
                     $delivery = [
                         'description' => $langs->trans('ECommerceShipping') . (isset($order->shipping_lines[0]) ? ' - ' .
                                 $order->shipping_lines[0]->method_title : ''), // $order->customer_note
@@ -1168,9 +1144,9 @@ class eCommerceRemoteAccessWoocommerce
                     require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
                     $efields = new ExtraFields($this->db);
                     $efields->fetch_name_optionals_label('commande', true);
-                    if (isset($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options']) &&
-                       is_array($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options'])) {
-                        foreach ($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options'] as $key => $value) {
+                    if (isset($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options']) &&
+                       is_array($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options'])) {
+                        foreach ($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options'] as $key => $value) {
                             $key_test = ($pos = strpos($key , '_')) > 0 ? substr($key, $pos + 1) : $key;
                             if ($key_test == $order->status) {
                                 $orderStatus = $key;
@@ -1201,8 +1177,8 @@ class eCommerceRemoteAccessWoocommerce
                         'remote_order' => $order,
                         'payment_method' => $order->payment_method_title,
                         'extrafields' => [
-                            "ecommerceng_online_payment_{$conf->entity}" => empty($order->date_paid) ? 0 : 1,
-                            "ecommerceng_wc_status_{$this->site->id}_{$conf->entity}" => $orderStatus,
+                            "ecommerceext_online_payment_{$conf->entity}" => empty($order->date_paid) ? 0 : 1,
+                            "ecommerceext_wc_status_{$this->site->id}_{$conf->entity}" => $orderStatus,
                         ],
                     ];
 
@@ -1272,7 +1248,7 @@ class eCommerceRemoteAccessWoocommerce
 
         $categories = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
 
         while (true) {
             try {
@@ -1523,7 +1499,7 @@ class eCommerceRemoteAccessWoocommerce
             foreach ($photos as $index => $photo) {
                 $img = [];
 
-                $filename = ecommerceng_wordpress_sanitize_file_name($photo['photo']);
+                $filename = ecommerceext_wordpress_sanitize_file_name($photo['photo']);
                 if (!isset($current_images[$filename])) {
                     $result = $this->worpressclient->postmedia("media", $dir . $photo['photo'], [
                         'slug' => $object->id . '_' . $filename,
@@ -1606,7 +1582,7 @@ class eCommerceRemoteAccessWoocommerce
             */
 
             $variationData = [
-                //'description' => nl2br($object->array_options["options_ecommerceng_description_{$conf->entity}"]),                    // string       Variation description.
+                //'description' => nl2br($object->array_options["options_ecommerceext_description_{$conf->entity}"]),                    // string       Variation description.
                 //'sku' => $object->ref,                                  // string       Unique identifier.
                 'regular_price' => $price,                              // string       Variation regular price.
                 //'sale_price' => '',                                     // string       Variation sale price.
@@ -1644,7 +1620,7 @@ class eCommerceRemoteAccessWoocommerce
                 $variationData['sku'] = $object->ref;
             }
             if ($productDescriptionSynchDirection == 'dtoe' || $productDescriptionSynchDirection == 'all') {
-                $variationData['description'] = nl2br($object->array_options["options_ecommerceng_description_{$conf->entity}"]);
+                $variationData['description'] = nl2br($object->array_options["options_ecommerceext_description_{$conf->entity}"]);
             }
             if ($productWeightSynchDirection == 'dtoe' || $productWeightSynchDirection == 'all') {
                 $variationData['weight'] = (!empty($totalWeight) ? $totalWeight : '');
@@ -1653,9 +1629,9 @@ class eCommerceRemoteAccessWoocommerce
                 $variationData['tax_status'] = 'none';
 
                 // Set tax
-                if (!empty($object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"])) {
+                if (!empty($object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"])) {
                     $variationData['tax_status'] = 'taxable';
-                    $variationData['tax_class'] = $object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"];
+                    $variationData['tax_class'] = $object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"];
                 }
             }
 
@@ -1663,7 +1639,7 @@ class eCommerceRemoteAccessWoocommerce
             if (!empty($object->array_options)) {
                 foreach ($object->array_options as $key => $value) {
                     $cr_key = substr($key, 8);
-                    if (preg_match('/^ecommerceng_/', $cr_key)) continue;
+                    if (preg_match('/^ecommerceext_/', $cr_key)) continue;
                     $options_saved = $this->site->parameters['ef_crp']['product'][$cr_key];
                     if ($options_saved['activated']) {
                         $rm_key = $cr_key;
@@ -1768,7 +1744,7 @@ class eCommerceRemoteAccessWoocommerce
                 }
             }
 
-            $status = $object->array_options["options_ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"];
+            $status = $object->array_options["options_ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"];
 
             $productData = [
                 'name' => $object->label,                            // string		Product name.
@@ -1777,8 +1753,8 @@ class eCommerceRemoteAccessWoocommerce
                 //'status' => (!empty($status) ? $status : ''), //$object->status ? 'publish' : 'pending',	// string		Product status (post status). Options: draft, pending, private and publish. Default is publish.
                 //'featured'              => false,		                            // boolean		Featured product. Default is false.
                 //'catalog_visibility'    => '',                                      // string		Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
-                //'description' => nl2br($object->array_options["options_ecommerceng_description_{$conf->entity}"]),                    // string		Product description.
-                //'short_description' => nl2br($object->array_options["options_ecommerceng_short_description_{$conf->entity}"]),                                      // string		Product short description.
+                //'description' => nl2br($object->array_options["options_ecommerceext_description_{$conf->entity}"]),                    // string		Product description.
+                //'short_description' => nl2br($object->array_options["options_ecommerceext_short_description_{$conf->entity}"]),                                      // string		Product short description.
                 //'sku' => $object->ref,                            // string		Unique identifier.
                 'regular_price' => $price,                          // string		Product regular price.
                 //'sale_price'            => '',                                      // string		Product sale price.
@@ -1824,10 +1800,10 @@ class eCommerceRemoteAccessWoocommerce
                 $productData['sku'] = $object->ref;
             }
             if ($productDescriptionSynchDirection == 'dtoe' || $productDescriptionSynchDirection == 'all') {
-                $productData['description'] = nl2br($object->array_options["options_ecommerceng_description_{$conf->entity}"]);
+                $productData['description'] = nl2br($object->array_options["options_ecommerceext_description_{$conf->entity}"]);
             }
             if ($productShortDescriptionSynchDirection == 'dtoe' || $productShortDescriptionSynchDirection == 'all') {
-                $productData['short_description'] = nl2br($object->array_options["options_ecommerceng_short_description_{$conf->entity}"]);
+                $productData['short_description'] = nl2br($object->array_options["options_ecommerceext_short_description_{$conf->entity}"]);
             }
             if ($productWeightSynchDirection == 'dtoe' || $productWeightSynchDirection == 'all') {
                 $productData['weight'] = (!empty($totalWeight) ? $totalWeight : '');
@@ -1836,9 +1812,9 @@ class eCommerceRemoteAccessWoocommerce
                 $productData['tax_status'] = 'none';
 
                 // Set tax
-                if (!empty($object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"])) {
+                if (!empty($object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"])) {
                     $productData['tax_status'] = 'taxable';
-                    $productData['tax_class'] = $object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"];
+                    $productData['tax_class'] = $object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"];
                 }
             }
             if ($productStatusSynchDirection == 'dtoe' || $productStatusSynchDirection == 'all') {
@@ -1849,7 +1825,7 @@ class eCommerceRemoteAccessWoocommerce
             if (!empty($object->array_options)) {
                 foreach ($object->array_options as $key => $value) {
                     $cr_key = substr($key, 8);
-                    if (preg_match('/^ecommerceng_/', $cr_key)) continue;
+                    if (preg_match('/^ecommerceext_/', $cr_key)) continue;
                     $options_saved = $this->site->parameters['ef_crp']['product'][$cr_key];
                     if ($options_saved['activated']) {
                         $rm_key = $cr_key;
@@ -1989,8 +1965,8 @@ class eCommerceRemoteAccessWoocommerce
         //$societe = new Societe($this->db);
         //$societe->fetch($object->socid);
 
-        $billingName = (empty($conf->global->ECOMMERCENG_BILLING_CONTACT_NAME) ? 'Billing' : $conf->global->ECOMMERCENG_BILLING_CONTACT_NAME);      // Contact name treated as billing address.
-        $shippingName = (empty($conf->global->ECOMMERCENG_SHIPPING_CONTACT_NAME) ? 'Shipping' : $conf->global->ECOMMERCENG_SHIPPING_CONTACT_NAME);  // Contact name treated as shipping address.
+        $billingName = (empty($conf->global->ECOMMERCE_BILLING_CONTACT_NAME) ? 'Billing' : $conf->global->ECOMMERCE_BILLING_CONTACT_NAME);      // Contact name treated as billing address.
+        $shippingName = (empty($conf->global->ECOMMERCE_SHIPPING_CONTACT_NAME) ? 'Shipping' : $conf->global->ECOMMERCE_SHIPPING_CONTACT_NAME);  // Contact name treated as shipping address.
 
         if ($object->lastname == $billingName) {
             $address = explode("\n", $object->address);
@@ -2070,9 +2046,9 @@ class eCommerceRemoteAccessWoocommerce
             $efields = new ExtraFields($this->db);
             $efields->fetch_name_optionals_label('commande', true);
             $order_status = array();
-            if (isset($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options']) &&
-               is_array($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options'])) {
-                foreach ($efields->attribute_param["ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"]['options'] as $key => $value) {
+            if (isset($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options']) &&
+               is_array($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options'])) {
+                foreach ($efields->attribute_param["ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"]['options'] as $key => $value) {
                     $status_lvl = 0;
                     if (($pos = strpos($key , '_')) > 0) {
                         $status_key = substr($key, $pos + 1);
@@ -2082,9 +2058,9 @@ class eCommerceRemoteAccessWoocommerce
                 }
             }
 
-            $wc_status = $object->array_options["options_ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"];
+            $wc_status = $object->array_options["options_ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"];
             if ($order_status[$status] < $order_status[$wc_status] &&
-                !empty($conf->global->ECOMMERCENG_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK)) $status = $wc_status;
+                !empty($conf->global->ECOMMERCE_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK)) $status = $wc_status;
 
             $orderData = [
                 'status' => $status,  // string  Order status. Options: pending, processing, on-hold, completed, cancelled, refunded and failed.
@@ -2094,7 +2070,7 @@ class eCommerceRemoteAccessWoocommerce
             if (!empty($object->array_options)) {
                 foreach ($object->array_options as $key => $value) {
                     $cr_key = substr($key, 8);
-                    if (preg_match('/^ecommerceng_/', $cr_key)) continue;
+                    if (preg_match('/^ecommerceext_/', $cr_key)) continue;
                     $options_saved = $this->site->parameters['ef_crp']['commande'][$cr_key];
                     if ($options_saved['activated']) {
                         $extrafield_value = $value;
@@ -2121,7 +2097,7 @@ class eCommerceRemoteAccessWoocommerce
                 return false;
             }
 
-            $object->array_options["options_ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"] = $order_status[$status] . '_' . $status;
+            $object->array_options["options_ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"] = $order_status[$status] . '_' . $status;
             $object->insertExtraFields();
         }
 
@@ -2170,7 +2146,7 @@ class eCommerceRemoteAccessWoocommerce
         global $conf, $langs, $user;
 
         try {
-            $results = $this->clientOld->get('products', ['filter' => ['sku' => $object->ref], 'fields' => 'id']);
+            $results = $this->client->get('products', ['sku' => $object->ref, 'fields' => 'id']);
         } catch (HttpClientException $fault) {
             $this->errors[] = $langs->trans('ECommerceWoocommerceCheckRemoteProductExist', $this->site->name, $fault->getCode() . ': ' . $fault->getMessage());
             dol_syslog(__METHOD__ .
@@ -2178,7 +2154,6 @@ class eCommerceRemoteAccessWoocommerce
                 ' - Request:' . json_encode($fault->getRequest()) . ' - Response:' . json_encode($fault->getResponse()), LOG_ERR);
             return false;
         }
-        $results = isset($results->products) ? $results->products : [];
 
         if (is_array($results) && count($results) > 0) {
             $remoteId = $results[0]->id;
@@ -2258,7 +2233,7 @@ class eCommerceRemoteAccessWoocommerce
                 foreach ($photos as $index => $photo) {
                     $img = [];
 
-                    $filename = ecommerceng_wordpress_sanitize_file_name($photo['photo']);
+                    $filename = ecommerceext_wordpress_sanitize_file_name($photo['photo']);
                     $result = $this->worpressclient->postmedia("media", $dir . $photo['photo'], [
                         'slug' => $object->id . '_' . $filename,
                         'ping_status' => 'closed',
@@ -2366,7 +2341,7 @@ class eCommerceRemoteAccessWoocommerce
                 }
             }
 
-            $status = $object->array_options["options_ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"];
+            $status = $object->array_options["options_ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"];
 
             // Product
             $productData = [
@@ -2376,8 +2351,8 @@ class eCommerceRemoteAccessWoocommerce
                 //'status' => (!empty($status) ? $status : ''), //$object->status ? 'publish' : 'pending',	// string		Product status (post status). Options: draft, pending, private and publish. Default is publish.
                 //'featured'              => false,		                            // boolean		Featured product. Default is false.
                 //'catalog_visibility'    => '',                                      // string		Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
-                //'description' => $object->array_options["options_ecommerceng_description_{$conf->entity}"],                    // string		Product description.
-                //'short_description' => $object->array_options["options_ecommerceng_short_description_{$conf->entity}"],                                      // string		Product short description.
+                //'description' => $object->array_options["options_ecommerceext_description_{$conf->entity}"],                    // string		Product description.
+                //'short_description' => $object->array_options["options_ecommerceext_short_description_{$conf->entity}"],                                      // string		Product short description.
                 //'sku' => $object->ref,                            // string		Unique identifier.
                 'regular_price' => $price,                          // string		Product regular price.
                 //'sale_price'            => '',                                      // string		Product sale price.
@@ -2429,10 +2404,10 @@ class eCommerceRemoteAccessWoocommerce
                 $productData['sku'] = $object->ref;
             }
             if ($productDescriptionSynchDirection == 'dtoe' || $productDescriptionSynchDirection == 'all') {
-                $productData['description'] = $object->array_options["options_ecommerceng_description_{$conf->entity}"];
+                $productData['description'] = $object->array_options["options_ecommerceext_description_{$conf->entity}"];
             }
             if ($productShortDescriptionSynchDirection == 'dtoe' || $productShortDescriptionSynchDirection == 'all') {
-                $productData['short_description'] = $object->array_options["options_ecommerceng_short_description_{$conf->entity}"];
+                $productData['short_description'] = $object->array_options["options_ecommerceext_short_description_{$conf->entity}"];
             }
             if ($productWeightSynchDirection == 'dtoe' || $productWeightSynchDirection == 'all') {
                 $productData['weight'] = (!empty($totalWeight) ? $totalWeight : '');
@@ -2441,9 +2416,9 @@ class eCommerceRemoteAccessWoocommerce
                 $productData['tax_status'] = 'none';
 
                 // Set tax
-                if (!empty($object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"])) {
+                if (!empty($object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"])) {
                     $productData['tax_status'] = 'taxable';
-                    $productData['tax_class'] = $object->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"];
+                    $productData['tax_class'] = $object->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"];
                 }
             }
             if ($productStatusSynchDirection == 'dtoe' || $productStatusSynchDirection == 'all') {
@@ -2454,7 +2429,7 @@ class eCommerceRemoteAccessWoocommerce
             if (!empty($object->array_options)) {
                 foreach ($object->array_options as $key => $value) {
                     $cr_key = substr($key, 8);
-                    if (preg_match('/^ecommerceng_/', $cr_key)) continue;
+                    if (preg_match('/^ecommerceext_/', $cr_key)) continue;
                     $options_saved = $this->site->parameters['ef_crp']['product'][$cr_key];
                     if ($options_saved['activated']) {
                         $rm_key = $cr_key;
@@ -2521,7 +2496,7 @@ class eCommerceRemoteAccessWoocommerce
         // Create categories on Woocommerce
         $countCreated = 0;
         $cats_id_remote_id = array();
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_BATCH) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_BATCH, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_BATCH) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_BATCH, 100);
         foreach ($cats_by_level as $lvl => $group) {
             foreach ($group as $key => $categoryData) {
                 if (isset($cats_id_remote_id[$categoryData['parent']])) {
@@ -2709,7 +2684,7 @@ class eCommerceRemoteAccessWoocommerce
                     foreach ($photos as $index => $photo) {
                         $img = [];
 
-                        $filename = ecommerceng_wordpress_sanitize_file_name($photo['photo']);
+                        $filename = ecommerceext_wordpress_sanitize_file_name($photo['photo']);
                         if (!isset($current_images[$filename])) {
                             $result = $this->worpressclient->postmedia("media", $dir . $photo['photo'], [
                                 'slug' => $product_static->id . '_' . $filename,
@@ -2828,8 +2803,8 @@ class eCommerceRemoteAccessWoocommerce
                     }
                 }
 
-                $status = $product_static->array_options["options_ecommerceng_wc_status_{$this->site->id}_{$conf->entity}"];
-                $description = $product_static->array_options["options_ecommerceng_description_{$conf->entity}"];
+                $status = $product_static->array_options["options_ecommerceext_wc_status_{$this->site->id}_{$conf->entity}"];
+                $description = $product_static->array_options["options_ecommerceext_description_{$conf->entity}"];
 
                 // Product
                 $productData = [
@@ -2840,7 +2815,7 @@ class eCommerceRemoteAccessWoocommerce
                     //'featured'              => false,		                            // boolean		Featured product. Default is false.
                     //'catalog_visibility'    => '',                                      // string		Catalog visibility. Options: visible, catalog, search and hidden. Default is visible.
                     //'description' => (!empty($description) ? $description : $product_static->description),                    // string		Product description.
-                    //'short_description' => $product_static->array_options["options_ecommerceng_short_description_{$conf->entity}"],                                      // string		Product short description.
+                    //'short_description' => $product_static->array_options["options_ecommerceext_short_description_{$conf->entity}"],                                      // string		Product short description.
                     //'sku' => $sku,                            // string		Unique identifier.
                     'regular_price' => $price,                          // string		Product regular price.
                     //'sale_price'            => '',                                      // string		Product sale price.
@@ -2889,7 +2864,7 @@ class eCommerceRemoteAccessWoocommerce
                     $productData['description'] = (!empty($description) ? $description : $product_static->description);
                 }
                 if ($productShortDescriptionSynchDirection == 'dtoe' || $productShortDescriptionSynchDirection == 'all') {
-                    $productData['short_description'] = $product_static->array_options["options_ecommerceng_short_description_{$conf->entity}"];
+                    $productData['short_description'] = $product_static->array_options["options_ecommerceext_short_description_{$conf->entity}"];
                 }
                 if ($productWeightSynchDirection == 'dtoe' || $productWeightSynchDirection == 'all') {
                     $productData['weight'] = (!empty($totalWeight) ? $totalWeight : '');
@@ -2898,9 +2873,9 @@ class eCommerceRemoteAccessWoocommerce
                     $productData['tax_status'] = 'none';
 
                     // Set tax
-                    if (!empty($product_static->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"])) {
+                    if (!empty($product_static->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"])) {
                         $productData['tax_status'] = 'taxable';
-                        $productData['tax_class'] = $product_static->array_options["options_ecommerceng_tax_class_{$this->site->id}_{$conf->entity}"];
+                        $productData['tax_class'] = $product_static->array_options["options_ecommerceext_tax_class_{$this->site->id}_{$conf->entity}"];
                     }
                 }
                 if ($productStatusSynchDirection == 'dtoe' || $productStatusSynchDirection == 'all') {
@@ -2911,7 +2886,7 @@ class eCommerceRemoteAccessWoocommerce
                 if (!empty($product_static->array_options)) {
                     foreach ($product_static->array_options as $key => $value) {
                         $cr_key = substr($key, 8);
-                        if (preg_match('/^ecommerceng_/', $cr_key)) continue;
+                        if (preg_match('/^ecommerceext_/', $cr_key)) continue;
                         $options_saved = $this->site->parameters['ef_crp']['product'][$cr_key];
                         if ($options_saved['activated']) {
                             $rm_key = $cr_key;
@@ -2948,7 +2923,7 @@ class eCommerceRemoteAccessWoocommerce
         }
 
         $prods_id_remote_id = array();
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_BATCH) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_BATCH, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_BATCH) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_BATCH, 100);
 
         // Create products on Woocommerce
         $requestGroups = $this->getRequestGroups($products, $nb_max_by_request);
@@ -3298,7 +3273,7 @@ class eCommerceRemoteAccessWoocommerce
         dol_syslog(__METHOD__ . ": Retrieve all Woocommerce tax rates", LOG_DEBUG);
         global $conf, $langs;
 
-        $nb_max_by_request = empty($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCENG_MAXSIZE_MULTICALL, 100);
+        $nb_max_by_request = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
 
         $taxesTable = [ 'taxes' => [], 'classes' => [], 'countries' => [], 'states' => [], 'postcodes' => [], 'cities' => []];
         $idxPage = 0;

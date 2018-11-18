@@ -18,9 +18,9 @@
 
 
 include_once DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php';
-dol_include_once('/ecommerceng/class/data/eCommerceProduct.class.php');
-dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
-dol_include_once('/ecommerceng/class/data/woocommerce/eCommerceRemoteAccessWoocommerce.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceProduct.class.php');
+dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
+dol_include_once('/ecommerceext/class/data/woocommerce/eCommerceRemoteAccessWoocommerce.class.php');
 
 /**
  * Update the price for all product in the ecommerce product category for this site price level
@@ -87,7 +87,7 @@ function updatePriceLevel($siteDb)
     return 1;
 }
 
-function ecommerceng_wordpress_sanitize_file_name( $filename ) {
+function ecommerceext_wordpress_sanitize_file_name( $filename ) {
     //$filename_raw = $filename;
     $special_chars = array("?", "[", "]", "/", "\\", "=", "<", ">", ":", ";", ",", "'", "\"", "&", "$", "#", "*", "(", ")", "|", "~", "`", "!", "{", "}", "%", "+", chr(0));
     /**
@@ -159,7 +159,7 @@ function ecommerceng_wordpress_sanitize_file_name( $filename ) {
     return $filename;
 }
 
-function ecommerceng_download_image($image, $product, &$error_message)
+function ecommerceext_download_image($image, $product, &$error_message)
 {
     dol_syslog(__METHOD__.': image=' . implode(',',$image) . ' product_id=' . $product->id, LOG_DEBUG);
     global $db, $conf, $maxwidthsmall, $maxheightsmall, $maxwidthmini, $maxheightmini;
@@ -316,7 +316,7 @@ function ecommerceng_download_image($image, $product, &$error_message)
     return true;
 }
 
-function ecommerceng_remove_obsolete_image($product, $images, &$error_message)
+function ecommerceext_remove_obsolete_image($product, $images, &$error_message)
 {
     dol_syslog(__METHOD__.': product_id=' . $product->id . ' images=' . implode(',', $images), LOG_DEBUG);
     global $db, $conf;
@@ -376,7 +376,7 @@ function ecommerceng_remove_obsolete_image($product, $images, &$error_message)
     return true;
 }
 
-function ecommerceng_add_extrafields($db, $langs, $extrafields, &$error) {
+function ecommerceext_add_extrafields($db, $langs, $extrafields, &$error) {
     $efields = new ExtraFields($db);
     foreach ($extrafields as $extrafield) {
         $result = $efields->addExtraField(
@@ -401,10 +401,10 @@ function ecommerceng_add_extrafields($db, $langs, $extrafields, &$error) {
     }
 }
 
-function ecommerceng_update_woocommerce_dict_tax_class($db, $site)
+function ecommerceext_update_woocommerce_dict_tax_class($db, $site)
 {
     global $conf, $langs;
-    $langs->load('woocommerce@ecommerceng');
+    $langs->load('woocommerce@ecommerceext');
 
     $eCommerceRemoteAccessWoocommerce = new eCommerceRemoteAccessWoocommerce($db, $site);
 
@@ -419,7 +419,7 @@ function ecommerceng_update_woocommerce_dict_tax_class($db, $site)
         return false;
     }
 
-    $eCommerceDict = new eCommerceDict($db, MAIN_DB_PREFIX.'c_ecommerceng_tax_class');
+    $eCommerceDict = new eCommerceDict($db, MAIN_DB_PREFIX.'c_ecommerce_tax_class');
 
     // Get all tax class in dictionary for this entity and site
     $dict_tax_classes = $eCommerceDict->search(['entity'=>['value'=>$conf->entity],'site_id'=>['value'=>$site->id]]);

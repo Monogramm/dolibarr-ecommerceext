@@ -19,8 +19,8 @@
 
 
 /**
- *      \file       ecommerceng/class/data/eCommerceCategory.class.php
- *      \ingroup    ecommerceng
+ *      \file       ecommerceext/class/data/eCommerceCategory.class.php
+ *      \ingroup    ecommerceext
  *      \brief      This file is an example for a CRUD class file (Create/Read/Update/Delete)
  */
 // Put here all includes required by your class file
@@ -96,8 +96,17 @@ class eCommerceCategory // extends CommonObject
         $sql.= " " . $this->db->escape($this->fk_category) . ",";
         $sql.= " " . $this->db->escape($this->fk_site) . ",";
         $sql.= " '" . $this->db->escape($this->remote_id) . "',";
-        $sql.= " '" . $this->db->escape($this->remote_parent_id) . "',";
-        $sql.= " '" . $this->db->idate($this->last_update) . "'";
+        if (isset($this->remote_parent_id)) {
+            $this->remote_parent_id = trim($this->remote_parent_id);
+			$sql.= " '" . $this->db->escape($this->remote_parent_id) . "',";
+		} else {
+			$sql.= " NULL,";
+		}
+        if (isset($this->last_update)) {
+			$sql.= " '" . $this->db->idate($this->last_update) . "'";
+		} else {
+			$sql.= " NULL";
+		}
         $sql.= ")";
 
         $this->db->begin();

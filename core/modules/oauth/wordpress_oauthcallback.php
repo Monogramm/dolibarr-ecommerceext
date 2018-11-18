@@ -33,8 +33,8 @@ if (! $res && preg_match('/\/nltechno([^\/]*)\//',$_SERVER["PHP_SELF"],$reg)) $r
 if (! $res && preg_match('/\/teclib([^\/]*)\//',$_SERVER["PHP_SELF"],$reg)) $res=@include("../../../dolibarr".$reg[1]."/htdocs/main.inc.php"); // Used on dev env only
 if (! $res) die("Include of main fails");
 require_once DOL_DOCUMENT_ROOT.'/includes/OAuth/bootstrap.php';
-dol_include_once('/ecommerceng/includes/CurlClientEx.php');
-dol_include_once('/ecommerceng/class/data/eCommerceSite.class.php');
+dol_include_once('/ecommerceext/includes/CurlClientEx.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSite.class.php');
 use OAuth\Common\Storage\DoliStorage;
 use OAuth\Common\Consumer\Credentials;
 use OAuth\Common\Http\Uri\Uri;
@@ -67,8 +67,8 @@ if ($res < 0) {
 $uriFactory = new \OAuth\Common\Http\Uri\UriFactory();
 //$currentUri = $uriFactory->createFromSuperGlobalArray($_SERVER);
 //$currentUri->setQuery('');
-//$currentUri = $uriFactory->createFromAbsolute($urlwithroot.'/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php?ecommerce_id='.$siteId);
-$currentUri = $uriFactory->createFromAbsolute(dol_buildpath('/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$siteId);
+//$currentUri = $uriFactory->createFromAbsolute($urlwithroot.'/custom/ecommerceext/core/modules/oauth/wordpress_oauthcallback.php?ecommerce_id='.$siteId);
+$currentUri = $uriFactory->createFromAbsolute(dol_buildpath('/custom/ecommerceext/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$siteId);
 
 
 /**

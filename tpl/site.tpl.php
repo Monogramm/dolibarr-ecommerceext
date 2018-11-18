@@ -1,12 +1,20 @@
 <?php
 
+// Protection to avoid direct call of template
+if (empty($conf) || ! is_object($conf))
+{
+	print "Error, template page can't be called as URL";
+	exit;
+}
+
+
 llxHeader();
 
 if (is_object($site))
 {
     $linkback='<a href="index.php">'.$langs->trans("BackToListOfSites").'</a>';
 
-    print_fiche_titre($langs->trans('ECommerceSiteSynchro').' '.$site->name, $linkback, 'eCommerceTitle@ecommerceng');
+    print_fiche_titre($langs->trans('ECommerceSiteSynchro').' '.$site->name, $linkback, 'eCommerceTitle@ecommerceext');
 
     print '<br>';
 
@@ -15,7 +23,7 @@ if (is_object($site))
     $head[1][1] = $langs->trans("Direction").' : Ecommerce -> Dolibarr';
     $head[1][2] = 'ecommerce2dolibarr';
 
-    dol_fiche_head($head, 'ecommerce2dolibarr', '');
+    dol_fiche_head($head, 'ecommerce2dolibarr', '', (((float) DOL_VERSION < 7) ? 0 : -1));
 
     print '<form name="form_count" id="form_count" action="'.$_SERVER['PHP_SELF'].'?id='.$site->id.'" method="post">';
     //print '<input type="hidden" name="id" value="'.$site->id.'">';
@@ -28,6 +36,7 @@ if (is_object($site))
 
     print '<table class="centpercent nobordernopadding">';
 
+    // Summary
     print '<tr><td>';
 
     print $langs->trans("ECommerceLastCompleteSync", $site->name).' : ';
@@ -36,10 +45,10 @@ if (is_object($site))
 
     print '</td><td align="right"></td></tr>';
 
+    // Restrict date
     print '<tr><td>';
 
     print $langs->trans("RestrictCountAndSynchForRecordBefore").' ';
-    //print '(YYYYMMDDHHMMSS) ';
     print '<input type="text" name="to_date" value="'.dol_escape_htmltag($to_date).'" placeholder="YYYYMMDDHHMMSS">';
 
     print '</td><td>';
@@ -54,11 +63,11 @@ if (is_object($site))
 
     print '</td></tr>';
 
+    // Restrict nb
     print '<tr><td>';
 
     print $langs->trans("RestrictNbInSync").' ';
-    //print '(YYYYMMDDHHMMSS) ';
-    print '<input type="text" name="to_nb" placeholder="0" value="'.dol_escape_htmltag($to_nb).'">';
+    print '<input type="text" name="to_nb" class="width50" placeholder="0" value="'.dol_escape_htmltag($to_nb).'">';
 
     print '</td><td>';
     print '</td></tr>';
@@ -73,6 +82,16 @@ if (is_object($site))
         print $nonloggedthirdparty->getNomUrl(1);
         print '</td><td align="right"></td></tr>';
     }
+
+    if (! empty($conf->global->ECOMMERCE_BANK_ID_FOR_PAYMENT) && $conf->global->ECOMMERCE_BANK_ID_FOR_PAYMENT > 0)
+    {
+    	print '<tr style="line-height: 2em"><td>';
+    	print $langs->trans("BankAccountForPayments").' : ';
+    	$bankforpayment=new Account($db);
+    	$result = $bankforpayment->fetch($conf->global->ECOMMERCE_BANK_ID_FOR_PAYMENT);
+    	print $bankforpayment->getNomUrl(1);
+    	print '</td><td align="right"></td></tr>';
+	}
 
     print '</table>';
 
@@ -102,7 +121,7 @@ if (is_object($site))
 			<td><?php print $nbCategoriesInDolibarrLinkedToE;
 			?> *
 			<?php
-			     if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+			     if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
 			     {
 					    print '<div class="debugtools inline-block">(<a class="submit_reset_data_links" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=categories_links">'.$langs->trans("ClearLinks").'</a>';
 					    print ' - <a class="submit_reset_data_all" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=categories_all">'.$langs->trans("ClearData").'</a>';
@@ -117,7 +136,7 @@ if (is_object($site))
 			</td>
 			<?php if ($synchRights==true) { ?>
 			<td>
-				<?php if ($nbCategoriesToUpdate>0||!empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+				<?php if ($nbCategoriesToUpdate>0 || !empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
 					<input type="submit" name="submit_synchro_category" id="submit_synchro_category" class="button" value="<?php print $langs->trans('ECommerceSynchronizeCategoryProduct') ?>">
 				<?php } ?>
 			</td>
@@ -131,7 +150,7 @@ if (is_object($site))
 			<td><?php print $nbProductInDolibarr; ?> **</td>
 			<td><?php print $nbProductInDolibarrLinkedToE; ?> **
 			<?php
-			     if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+			     if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
 			     {
 				      print '<div class="debugtools inline-block"> (<a class="submit_reset_data_links" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=products_links">'.$langs->trans("ClearLinks").'</a>';
 			          print ' - <a class="submit_reset_data_all" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=products_all">'.$langs->trans("ClearData").'</a>';
@@ -144,12 +163,12 @@ if (is_object($site))
 			<?php if ($synchRights==true):?>
 			<td>
 				<?php
-				if ($nbProductToUpdate>0 && $nbCategoriesToUpdate>0&&empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) {
+				if ($nbProductToUpdate>0 && $nbCategoriesToUpdate>0 && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) {
 				    ?>
 					<input type="submit" name="submit_synchro_product" id="submit_synchro_product" class="button" disabled="disabled" value="<?php print $langs->trans('ECommerceSynchronizeProduct').' ('.$langs->trans("SyncCategFirst").")"; ?>">
 				<?php
 				}
-				elseif ($nbProductToUpdate>0||!empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+				elseif ($nbProductToUpdate>0 || !empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
 					<input type="submit" name="submit_synchro_product" id="submit_synchro_product" class="button" value="<?php print $langs->trans('ECommerceSynchronizeProduct') ?>">
 				<?php } ?>
 			</td>
@@ -163,7 +182,7 @@ if (is_object($site))
 			<td><?php print $nbSocieteInDolibarr; ?> ***</td>
 			<td><?php print $nbSocieteInDolibarrLinkedToE; ?> ***
 			<?php
-			     if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+			     if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
 			     {
 					    print '<div class="debugtools inline-block"> (<a class="submit_reset_data_links" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=thirdparties_links">'.$langs->trans("ClearLinks").'</a>';
 					    print ' - <a class="submit_reset_data_all" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=thirdparties_all">'.$langs->trans("ClearData").'</a>';
@@ -178,7 +197,7 @@ if (is_object($site))
 			</td>
 			<?php if ($synchRights==true):?>
 			<td>
-				<?php if ($nbSocieteToUpdate>0||!empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)): ?>
+				<?php if ($nbSocieteToUpdate>0 || !empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)): ?>
 					<input type="submit" name="submit_synchro_societe" id="submit_synchro_societe" class="button" value="<?php print $langs->trans('ECommerceSynchronizeSociete') ?>">
 				<?php endif; ?>
 			</td>
@@ -202,7 +221,7 @@ if (is_object($site))
     			<td><?php print $nbCommandeInDolibarr; ?></td>
     			<td><?php print $nbCommandeInDolibarrLinkedToE; ?>
     			<?php
-    			     if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+    			     if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
     			     {
     					    print '<div class="debugtools inline-block"> (<a class="submit_reset_data_links" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=orders_links">'.$langs->trans("ClearLinks").'</a>';
     					    print ' - <a class="submit_reset_data_all" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=orders_all">'.$langs->trans("ClearData").'</a>';
@@ -215,9 +234,9 @@ if (is_object($site))
     			<?php if ($synchRights==true):?>
     			<td>
                         <?php
-    				if ($nbCommandeToUpdate>0 && $nbSocieteToUpdate>0&&empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+    				if ($nbCommandeToUpdate>0 && $nbSocieteToUpdate>0 && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
     					<input type="submit" name="submit_synchro_commande" id="submit_synchro_commande" class="button" disabled="disabled" value="<?php print $langs->trans('ECommerceSynchronizeCommande').' ('.$langs->trans("SyncSocieteFirst").')'; ?>">
-    				<?php } elseif ($nbCommandeToUpdate>0||!empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+    				<?php } elseif ($nbCommandeToUpdate>0 || !empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
     					<input type="submit" name="submit_synchro_commande" id="submit_synchro_commande" class="button" value="<?php print $langs->trans('ECommerceSynchronizeCommande') ?>">
     				<?php } ?>
     			</td>
@@ -235,7 +254,7 @@ if (is_object($site))
 			<td><?php print $nbFactureInDolibarr; ?></td>
 			<td><?php print $nbFactureInDolibarrLinkedToE; ?>
 			<?php
-			     if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+			     if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
 			     {
 					    print '<div class="debugtools inline-block"> (<a class="submit_reset_data_links" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=invoices_links">'.$langs->trans("ClearLinks").'</a>';
 					    print ' - <a class="submit_reset_data_all" style="color: #600" href="'.$_SERVER["PHP_SELF"].'?id='.$site->id.'&reset_data=invoices_all">'.$langs->trans("ClearData").'</a>';
@@ -250,11 +269,11 @@ if (is_object($site))
 			</td>
 			<?php if ($synchRights==true):?>
 			<td>
-				<?php if ($nbFactureToUpdate>0 && $nbSocieteToUpdate>0&&empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+				<?php if ($nbFactureToUpdate>0 && $nbSocieteToUpdate>0 && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
 					<input type="submit" name="submit_synchro_facture" id="submit_synchro_facture" class="button" disabled="disabled" value="<?php print $langs->trans('ECommerceSynchronizeFacture').' ('.$langs->trans("SyncSocieteFirst").')'; ?>">
-				<?php } elseif ($nbFactureToUpdate>0 && $nbCommandeToUpdate>0&&empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+				<?php } elseif ($nbFactureToUpdate>0 && $nbCommandeToUpdate>0 && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
 					<input type="submit" name="submit_synchro_facture" id="submit_synchro_facture" class="button" disabled="disabled" value="<?php print $langs->trans('ECommerceSynchronizeFacture').' ('.$langs->trans("SyncCommandeFirst").')'; ?>">
-				<?php } elseif ($nbFactureToUpdate>0||!empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) { ?>
+				<?php } elseif ($nbFactureToUpdate>0 || !empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) { ?>
 					<input type="submit" name="submit_synchro_facture" id="submit_synchro_facture" class="button" value="<?php print $langs->trans('ECommerceSynchronizeFacture') ?>">
 				<?php } ?>
 			</td>
@@ -287,7 +306,7 @@ if (is_object($site))
     $head[1][1] = $langs->trans("Direction").' : Dolibarr -> Ecommerce';
     $head[1][2] = 'dolibarr2ecommerce';
 
-    dol_fiche_head($head, 'dolibarr2ecommerce', '');
+    dol_fiche_head($head, 'dolibarr2ecommerce', '', (((float) DOL_VERSION < 7) ? 0 : -1));
 
 	print $langs->trans("SyncIsAutomaticInRealTime", $site->name)."\n";
 
@@ -370,7 +389,7 @@ if (is_object($site))
 	print '</form>';
 
 
-	if (! empty($conf->global->ECOMMERCENG_SHOW_DEBUG_TOOLS))
+	if (! empty($conf->global->ECOMMERCE_SHOW_DEBUG_TOOLS))
 	{
 		print '<br><br>';
 
@@ -379,7 +398,7 @@ if (is_object($site))
 		$head[1][1] = $langs->trans("DangerZone");
 		$head[1][2] = 'dangerzone';
 
-   		dol_fiche_head($head, 'dangerzone', '');
+   		dol_fiche_head($head, 'dangerzone', '', (((float) DOL_VERSION < 7) ? 0 : -1));
 
 	    print '<div class="nodebugtools inline-block">';
 		print '<a style="color: #600" id="showtools">'.$langs->trans("ShowDebugTools").'</a>';
@@ -436,7 +455,7 @@ if (is_object($site))
 }
 else
 {
-	print_fiche_titre($langs->trans("ECommerceSiteSynchro"),$linkback,'eCommerceTitle@ecommerceng');
+	print_fiche_titre($langs->trans("ECommerceSiteSynchro"),$linkback,'eCommerceTitle@ecommerceext');
 	$errors[] = $langs->trans('ECommerceSiteError');
 }
 

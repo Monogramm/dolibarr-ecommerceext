@@ -16,4 +16,12 @@
 --
 -- ===================================================================
 
-ALTER TABLE llx_c_ecommerceng_tax_class ADD UNIQUE INDEX uk_c_ecommerceng_tax_class_site_id_code_entity(site_id,code,entity);
+create table llx_c_ecommerce_tax_class
+(
+  rowid     integer       AUTO_INCREMENT PRIMARY KEY,
+	site_id   integer       NOT NULL,
+  code      varchar(255)  NOT NULL,
+  label     varchar(255)  NOT NULL,
+	entity    integer       DEFAULT 1,
+  active    tinyint       DEFAULT 1 NOT NULL
+) ENGINE=InnoDB;

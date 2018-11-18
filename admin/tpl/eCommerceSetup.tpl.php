@@ -18,6 +18,13 @@
  * or see http://www.gnu.org/
  */
 
+// Protection to avoid direct call of template
+if (empty($conf) || ! is_object($conf))
+{
+	print "Error, template page can't be called as URL";
+	exit;
+}
+
 include_once DOL_DOCUMENT_ROOT.'/product/class/html.formproduct.class.php';
 
 $formproduct = new FormProduct($db);
@@ -27,7 +34,7 @@ llxHeader();
 print_fiche_titre($langs->trans("ECommerceSetup"),$linkback,'setup');
 
 ?>
-	<script type="text/javascript" src="<?php print dol_buildpath('/ecommerceng/js/form.js',1); ?>"></script>
+	<script type="text/javascript" src="<?php print dol_buildpath('/custom/ecommerceext/js/form.js',1); ?>"></script>
 	<br>
 	<form id="site_form_select" name="site_form_select" action="<?php $_SERVER['PHP_SELF'] ?>" method="post">
 		<select class="flat" id="site_form_select_site" name="site_form_select_site" onchange="eCommerceSubmitForm('site_form_select')">
@@ -150,6 +157,18 @@ $var=!$var;
 					</td>
 					<td><?php print $langs->trans('SynchUnkownCustomersOnThirdParty') ?></td>
 				</tr>
+<?php
+$var=!$var;
+?>
+<tr <?php print $bc[$var] ?>>
+  <td><span><?php print $langs->trans('BankAccountForPayments') ?></span></td>
+  <td>
+    <?php
+    $form->select_comptes($conf->global->ECOMMERCE_BANK_ID_FOR_PAYMENT,'ECOMMERCE_BANK_ID_FOR_PAYMENT',0,'',2);
+    ?>
+  </td>
+  <td><?php print $langs->trans('SynchPaymentsOnWichBankAccount') ?></td>
+</tr>
 <?php
 $var=!$var;
 ?>
@@ -510,7 +529,7 @@ if ($conf->societe->enabled) {
 ?>
          <tr <?php print $bc[$var] ?>>
            <td><?php print $langs->trans('ECommerceThirdParty') ?></td>
-           <td align="center"><input type="checkbox" name="ecommerce_realtime_dtoe_thridparty" value="1" <?php print !empty($ecommerceRealtimeDtoe['thridparty']) ? ' checked' : '' ?>></td>
+           <td align="center"><input type="checkbox" name="ecommerce_realtime_dtoe_thirdparty" value="1" <?php print !empty($ecommerceRealtimeDtoe['thirdparty']) ? ' checked' : '' ?>></td>
            <td><?php print $langs->trans('ECommerceRealTimeSynchroDolibarrToECommerceSetupDescription') ?></td>
          </tr>
 <?php
@@ -571,7 +590,7 @@ if ($conf->stock->enabled)
 					<td><span><?php print $langs->trans('ECommerceStockSyncDirection') ?></span></td>
 					<td>
 						<?php
-                            $array=array('none'=>$langs->trans('None'), 'ecommerce2dolibarr'=>$langs->trans('ECommerceToDolibarr'), 'dolibarr2ecommerce'=>$langs->trans('DolibarrToECommerce'));
+              $array=array('none'=>$langs->trans('None'), 'ecommerce2dolibarr'=>$langs->trans('ECommerceToDolibarr'), 'dolibarr2ecommerce'=>$langs->trans('DolibarrToECommerce'));
 							print $form->selectarray('ecommerce_stock_sync_direction', $array, $ecommerceStockSyncDirection);
 						?>
 					</td>
@@ -657,7 +676,7 @@ if ($ecommerceOrderStatus)
 ?>
             <tr <?php print $bc[$var] ?>>
               <td><?php print $langs->trans('ECommerceOrderStatusDtoECheckLvlStatus') ?></td>
-              <td><?php print $form->selectyesno('order_status_dtoe_check_lvl_status', $conf->global->ECOMMERCENG_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK) ?></td>
+              <td><?php print $form->selectyesno('order_status_dtoe_check_lvl_status', $conf->global->ECOMMERCE_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK) ?></td>
               <td><?php print $langs->trans('ECommerceOrderStatusDtoECheckLvlStatusDescription') ?></td>
             </tr>
 <?php

@@ -22,8 +22,8 @@
  * Class for update menus
  */
 
-dol_include_once('/ecommerceng/core/modules/modECommerceNg.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceSite.class.php');
+dol_include_once('/ecommerceext/core/modules/modECommerceExt.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSite.class.php');
 
 class eCommerceMenu
 {
@@ -56,40 +56,40 @@ class eCommerceMenu
     	$menu[0]=array(	'fk_menu'=>'',
     					'type'=>'top',
     					'titre'=>'ECommerceMenu',
-    					'mainmenu'=>'ecommerceng',
-    					'leftmenu'=>'ecommerceng',
-    					'url'=>'/ecommerceng/index.php',
-    					'langs'=>'ecommerce@ecommerceng',
+    					'mainmenu'=>'ecommerceext',
+    					'leftmenu'=>'ecommerceext',
+    					'url'=>'/ecommerceext/index.php',
+    					'langs'=>'ecommerce@ecommerceext',
     					'position'=>100,
-    					'enabled'=>'$conf->ecommerceng->enabled',
-    					'perms'=>'$user->rights->ecommerceng->read',
+    					'enabled'=>'$conf->ecommerceext->enabled',
+    					'perms'=>'$user->rights->ecommerceext->read',
     					'target'=>'',
     					'user'=>2);
     	//define left menu
-    	$menu[1]=array(	'fk_menu'=>'fk_mainmenu=ecommerceng',
+    	$menu[1]=array(	'fk_menu'=>'fk_mainmenu=ecommerceext',
     					'type'=>'left',
     					'titre'=>'ECommerceMenu',
-    					'mainmenu'=>'ecommerceng',
-    	                'leftmenu'=>'ecommerceng',
-    					'url'=>'/ecommerceng/index.php',
-    					'langs'=>'ecommerce@ecommerceng',
+    					'mainmenu'=>'ecommerceext',
+    	                'leftmenu'=>'ecommerceext',
+    					'url'=>'/ecommerceext/index.php',
+    					'langs'=>'ecommerce@ecommerceext',
     					'position'=>100,
-    					'enabled'=>'$conf->ecommerceng->enabled',
-    					'perms'=>'$user->rights->ecommerceng->read',
+    					'enabled'=>'$conf->ecommerceext->enabled',
+    					'perms'=>'$user->rights->ecommerceext->read',
     					'target'=>'',
     					'user'=>2);
 
     	//add link to configuration
-    	$menu[2]=array(	'fk_menu'=>'fk_mainmenu=ecommerceng',
+    	$menu[2]=array(	'fk_menu'=>'fk_mainmenu=ecommerceext',
     					'type'=>'left',
     					'titre'=>'ECommerceSetupSites',
-    					'mainmenu'=>'ecommerceng',
-    	                'leftmenu'=>'ecommerceng',
-    					'url'=>'/ecommerceng/admin/eCommerceSetup.php',
-    					'langs'=>'ecommerce@ecommerceng',
+    					'mainmenu'=>'ecommerceext',
+    	                'leftmenu'=>'ecommerceext',
+    					'url'=>'/ecommerceext/admin/eCommerceSetup.php',
+    					'langs'=>'ecommerce@ecommerceext',
     					'position'=>110,
-    					'enabled'=>'$conf->ecommerceng->enabled',
-    					'perms'=>'$user->rights->ecommerceng->site',
+    					'enabled'=>'$conf->ecommerceext->enabled',
+    					'perms'=>'$user->rights->ecommerceext->site',
     					'target'=>'',
     					'user'=>2);
 
@@ -98,16 +98,16 @@ class eCommerceMenu
     	$sites = $this->siteDb->listSites();
     	if (count($this->siteDb))
     		foreach ($sites as $site)
-    			$menu[]=array(	'fk_menu'=>'fk_mainmenu=ecommerceng',
+    			$menu[]=array(	'fk_menu'=>'fk_mainmenu=ecommerceext',
     							'type'=>'left',
     							'titre'=>$site['name'],
-    							'mainmenu'=>'ecommerceng',
-    			                'leftmenu'=>'ecommerceng',
-    							'url'=>'/ecommerceng/site.php?id='.$site['id'],
-    							'langs'=>'ecommerce@ecommerceng',
+    							'mainmenu'=>'ecommerceext',
+    			                'leftmenu'=>'ecommerceext',
+    							'url'=>'/ecommerceext/site.php?id='.$site['id'],
+    							'langs'=>'ecommerce@ecommerceext',
     							'position'=>120,
-    							'enabled'=>'$conf->ecommerceng->enabled',
-    							'perms'=>'$user->rights->ecommerceng->read',
+    							'enabled'=>'$conf->ecommerceext->enabled',
+    							'perms'=>'$user->rights->ecommerceext->read',
     							'target'=>'',
     							'user'=>2);
     	*/
@@ -119,8 +119,9 @@ class eCommerceMenu
      */
     function updateMenu()
     {
-    	if ($this->module == null)
-        	$this->module = new modECommerceNg($this->db);
+    	if ($this->module == null) {
+			$this->module = new modECommerceExt($this->db);
+		}
 
     	$this->module->menu = $this->getMenu();
     	$this->module->db->begin();

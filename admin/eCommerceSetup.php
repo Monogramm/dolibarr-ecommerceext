@@ -41,23 +41,23 @@ require_once(DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php');
 require_once DOL_DOCUMENT_ROOT . '/includes/OAuth/bootstrap.php';
 require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
 require_once DOL_DOCUMENT_ROOT . '/commande/class/commande.class.php';
-dol_include_once('/ecommerceng/class/data/eCommerceSite.class.php');
-dol_include_once('/ecommerceng/admin/class/gui/eCommerceMenu.class.php');
-dol_include_once('/ecommerceng/lib/eCommerce.lib.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSite.class.php');
+dol_include_once('/ecommerceext/admin/class/gui/eCommerceMenu.class.php');
+dol_include_once('/ecommerceext/lib/eCommerce.lib.php');
 
 use OAuth\Common\Storage\DoliStorage;
 
 $langs->load('admin');
 $langs->load('companies');
 $langs->load("oauth");
-$langs->load('ecommerce@ecommerceng');
-$langs->load('woocommerce@ecommerceng');
+$langs->load('ecommerce@ecommerceext');
+$langs->load('woocommerce@ecommerceext');
 
 $siteId = null;
 $errors = array();
 $success = array();
 //CHECK ACCESS
-if (!$user->admin || !$user->rights->ecommerceng->site)
+if (!$user->admin || !$user->rights->ecommerceext->site)
     accessforbidden();
 
 $error = GETPOST('error', 'alpha');
@@ -143,139 +143,139 @@ if ($_POST['site_form_detail_action'] == 'save')
             $siteDb->oauth_id = $_POST['ecommerce_oauth_id'];
             $siteDb->oauth_secret = $_POST['ecommerce_oauth_secret'];
 
-            dolibarr_set_const($db, 'ECOMMERCENG_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK', GETPOST('order_status_dtoe_check_lvl_status', 'alpha') == 'yes' ? 1 : 0, 'chaine', 0, '', $conf->entity);
+            dolibarr_set_const($db, 'ECOMMERCE_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK', GETPOST('order_status_dtoe_check_lvl_status', 'alpha') == 'yes' ? 1 : 0, 'chaine', 0, '', $conf->entity);
+        }
 
-            $efields = new ExtraFields($db);
-            $efields->fetch_name_optionals_label('commande', true);
-            $ecommerceOrderStatusForECommerceToDolibarr = array();
-            if (!isset($_POST['ecommerce_realtime_dtoe_thridparty']) && !isset($siteDb->parameters)) {
-                $ecommerceOrderStatusForECommerceToDolibarr = array(
-                    "pending" => array('selected' => 's' . Commande::STATUS_DRAFT, 'billed' => 0),
-                    "processing" => array('selected' => 's' . Commande::STATUS_VALIDATED, 'billed' => 0),
-                    "on-hold" => array('selected' => 's' . Commande::STATUS_DRAFT, 'billed' => 0),
-                    "completed" => array('selected' => 's' . Commande::STATUS_CLOSED, 'billed' => 1),
-                    "cancelled" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 0),
-                    "refunded" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 1),
-                    "failed" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 0),
-                );
-            } else {
-                if (isset($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options']) &&
-                    is_array($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options'])
-                ) {
-                    foreach ($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options'] as $key => $value) {
-                        if (($pos = strpos($key, '_')) > 0) $key = substr($key, $pos + 1);
-                        $billed = GETPOST('order_status_etod_billed_' . $key, 'alpha');
-                        $ecommerceOrderStatusForECommerceToDolibarr[$key] = array(
-                            'selected' => GETPOST('order_status_etod_' . $key, 'alpha'),
-                            'billed' => empty($billed) ? 0 : 1,
-                        );
-                    }
-                }
-            }
-
-            if (!isset($_POST['ecommerce_realtime_dtoe_thridparty']) && !isset($siteDb->parameters)) {
-                $ecommerceOrderStatusForDolibarrToECommerce = array(
-                    Commande::STATUS_CANCELED => 'cancelled',
-                    Commande::STATUS_DRAFT => 'on-hold',
-                    Commande::STATUS_VALIDATED => 'processing',
-                    Commande::STATUS_ACCEPTED => 'processing',
-                    Commande::STATUS_CLOSED => 'completed',
-                );
-            } else {
-                $ecommerceOrderStatusForDolibarrToECommerce = array(
-                    Commande::STATUS_CANCELED => GETPOST('order_status_dtoe_' . Commande::STATUS_CANCELED, 'alpha'),
-                    Commande::STATUS_DRAFT => GETPOST('order_status_dtoe_' . Commande::STATUS_DRAFT, 'alpha'),
-                    Commande::STATUS_VALIDATED => GETPOST('order_status_dtoe_' . Commande::STATUS_VALIDATED, 'alpha'),
-                    Commande::STATUS_ACCEPTED => GETPOST('order_status_dtoe_' . Commande::STATUS_ACCEPTED, 'alpha'),
-                    Commande::STATUS_CLOSED => GETPOST('order_status_dtoe_' . Commande::STATUS_CLOSED, 'alpha'),
-                );
-            }
-
-            $ecommerceExtrafieldsCorrespondence = array();
-            // fetch optionals attributes and labels
-            if ($conf->product->enabled) {
-                $product_table_element = 'product';
-                $ecommerceExtrafieldsCorrespondence[$product_table_element] = array();
-
-                $productExtrafields = $efields->fetch_name_optionals_label($product_table_element);
-                foreach ($productExtrafields as $key => $label) {
-                    if (preg_match('/^ecommerceng_/', $key)) continue;
-                    $options_saved = $siteDb->parameters['ef_crp'][$product_table_element][$key];
-                    $activated = GETPOST('act_ef_crp_' . $product_table_element . '_' . $key, 'alpha');
-                    $correspondence = GETPOST('ef_crp_' . $product_table_element . '_' . $key, 'alpha');
-                    $ecommerceExtrafieldsCorrespondence[$product_table_element][$key] = array(
-                        'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
-                        'activated' => !empty($activated) ? 1 : 0,
-                    );
-                }
-            }
-            if ($conf->commande->enabled) {
-                $order_table_element = 'commande';
-                $ecommerceExtrafieldsCorrespondence[$order_table_element] = array();
-
-                $orderExtrafields = $efields->fetch_name_optionals_label($order_table_element);
-                foreach ($orderExtrafields as $key => $label) {
-                    if (preg_match('/^ecommerceng_/', $key)) continue;
-                    $options_saved = $siteDb->parameters['ef_crp'][$order_table_element][$key];
-                    $activated = GETPOST('act_ef_crp_' . $order_table_element . '_' . $key, 'alpha');
-                    $correspondence = GETPOST('ef_crp_' . $order_table_element . '_' . $key, 'alpha');
-                    $ecommerceExtrafieldsCorrespondence[$order_table_element][$key] = array(
-                        'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
-                        'activated' => !empty($activated) ? 1 : 0,
-                    );
-                }
-
-                $order_line_table_element = 'commandedet';
-                $ecommerceExtrafieldsCorrespondence[$order_line_table_element] = array();
-
-                $orderLinesExtrafields = $efields->fetch_name_optionals_label($order_line_table_element);
-                foreach ($orderLinesExtrafields as $key => $label) {
-                    if (preg_match('/^ecommerceng_/', $key)) continue;
-                    $options_saved = $siteDb->parameters['ef_crp'][$order_line_table_element][$key];
-                    $activated = GETPOST('act_ef_crp_' . $order_line_table_element . '_' . $key, 'alpha');
-                    $correspondence = GETPOST('ef_crp_' . $order_line_table_element . '_' . $key, 'alpha');
-                    $ecommerceExtrafieldsCorrespondence[$order_line_table_element][$key] = array(
-                        'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
-                        'activated' => !empty($activated) ? 1 : 0,
-                    );
-                }
-            }
-
-            if (!isset($_POST['ecommerce_realtime_dtoe_thridparty']) && !isset($siteDb->parameters)) {
-                $ecommerceRealtimeDolibarrToECommerce = array(
-                    'thridparty' => 1,
-                    'contact' => 1,
-                    'product' => 1,
-                    'order' => 1,
-                );
-            } else {
-                $ecommerceRealtimeDolibarrToECommerce = array(
-                    'thridparty' => !empty($_POST['ecommerce_realtime_dtoe_thridparty']) ? 1 : 0,
-                    'contact' => !empty($_POST['ecommerce_realtime_dtoe_contact']) ? 1 : 0,
-                    'product' => !empty($_POST['ecommerce_realtime_dtoe_product']) ? 1 : 0,
-                    'order' => !empty($_POST['ecommerce_realtime_dtoe_order']) ? 1 : 0,
-                );
-            }
-
-            $ecommerceProductSynchDirection = array(
-                'image' => GETPOST('ecommerce_product_image_synch_direction', 'alpha'),
-                'ref' => GETPOST('ecommerce_product_ref_synch_direction', 'alpha'),
-                'description' => GETPOST('ecommerce_product_description_synch_direction', 'alpha'),
-                'short_description' => GETPOST('ecommerce_product_short_description_synch_direction', 'alpha'),
-                'weight' => GETPOST('ecommerce_product_weight_synch_direction', 'alpha'),
-                'tax' => GETPOST('ecommerce_product_tax_synch_direction', 'alpha'),
-                'status' => GETPOST('ecommerce_product_status_synch_direction', 'alpha'),
+        $efields = new ExtraFields($db);
+        $efields->fetch_name_optionals_label('commande', true);
+        $ecommerceOrderStatusForECommerceToDolibarr = array();
+        if (!isset($_POST['ecommerce_realtime_dtoe_thirdparty']) && !isset($siteDb->parameters)) {
+            $ecommerceOrderStatusForECommerceToDolibarr = array(
+                "pending" => array('selected' => 's' . Commande::STATUS_DRAFT, 'billed' => 0),
+                "processing" => array('selected' => 's' . Commande::STATUS_VALIDATED, 'billed' => 0),
+                "on-hold" => array('selected' => 's' . Commande::STATUS_DRAFT, 'billed' => 0),
+                "completed" => array('selected' => 's' . Commande::STATUS_CLOSED, 'billed' => 1),
+                "cancelled" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 0),
+                "refunded" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 1),
+                "failed" => array('selected' => 's' . Commande::STATUS_CANCELED, 'billed' => 0),
             );
+        } else {
+            if (isset($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options']) &&
+                is_array($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options'])
+            ) {
+                foreach ($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options'] as $key => $value) {
+                    if (($pos = strpos($key, '_')) > 0) $key = substr($key, $pos + 1);
+                    $billed = GETPOST('order_status_etod_billed_' . $key, 'alpha');
+                    $ecommerceOrderStatusForECommerceToDolibarr[$key] = array(
+                        'selected' => GETPOST('order_status_etod_' . $key, 'alpha'),
+                        'billed' => empty($billed) ? 0 : 1,
+                    );
+                }
+            }
+        }
 
-            $siteDb->parameters = array(
-                'order_status_etod' => $ecommerceOrderStatusForECommerceToDolibarr,
-                'order_status_dtoe' => $ecommerceOrderStatusForDolibarrToECommerce,
-                'ef_crp' => $ecommerceExtrafieldsCorrespondence,
-                'payment_cond' => $_POST['ecommerce_payment_cond'],
-                'realtime_dtoe' => $ecommerceRealtimeDolibarrToECommerce,
-                'product_synch_direction' => $ecommerceProductSynchDirection,
+        if (!isset($_POST['ecommerce_realtime_dtoe_thirdparty']) && !isset($siteDb->parameters)) {
+            $ecommerceOrderStatusForDolibarrToECommerce = array(
+                Commande::STATUS_CANCELED => 'cancelled',
+                Commande::STATUS_DRAFT => 'on-hold',
+                Commande::STATUS_VALIDATED => 'processing',
+                Commande::STATUS_ACCEPTED => 'processing',
+                Commande::STATUS_CLOSED => 'completed',
+            );
+        } else {
+            $ecommerceOrderStatusForDolibarrToECommerce = array(
+                Commande::STATUS_CANCELED => GETPOST('order_status_dtoe_' . Commande::STATUS_CANCELED, 'alpha'),
+                Commande::STATUS_DRAFT => GETPOST('order_status_dtoe_' . Commande::STATUS_DRAFT, 'alpha'),
+                Commande::STATUS_VALIDATED => GETPOST('order_status_dtoe_' . Commande::STATUS_VALIDATED, 'alpha'),
+                Commande::STATUS_ACCEPTED => GETPOST('order_status_dtoe_' . Commande::STATUS_ACCEPTED, 'alpha'),
+                Commande::STATUS_CLOSED => GETPOST('order_status_dtoe_' . Commande::STATUS_CLOSED, 'alpha'),
             );
         }
+
+        $ecommerceExtrafieldsCorrespondence = array();
+        // fetch optionals attributes and labels
+        if ($conf->product->enabled) {
+            $product_table_element = 'product';
+            $ecommerceExtrafieldsCorrespondence[$product_table_element] = array();
+
+            $productExtrafields = $efields->fetch_name_optionals_label($product_table_element);
+            foreach ($productExtrafields as $key => $label) {
+                if (preg_match('/^ecommerceext_/', $key)) continue;
+                $options_saved = $siteDb->parameters['ef_crp'][$product_table_element][$key];
+                $activated = GETPOST('act_ef_crp_' . $product_table_element . '_' . $key, 'alpha');
+                $correspondence = GETPOST('ef_crp_' . $product_table_element . '_' . $key, 'alpha');
+                $ecommerceExtrafieldsCorrespondence[$product_table_element][$key] = array(
+                    'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
+                    'activated' => !empty($activated) ? 1 : 0,
+                );
+            }
+        }
+        if ($conf->commande->enabled) {
+            $order_table_element = 'commande';
+            $ecommerceExtrafieldsCorrespondence[$order_table_element] = array();
+
+            $orderExtrafields = $efields->fetch_name_optionals_label($order_table_element);
+            foreach ($orderExtrafields as $key => $label) {
+                if (preg_match('/^ecommerceext_/', $key)) continue;
+                $options_saved = $siteDb->parameters['ef_crp'][$order_table_element][$key];
+                $activated = GETPOST('act_ef_crp_' . $order_table_element . '_' . $key, 'alpha');
+                $correspondence = GETPOST('ef_crp_' . $order_table_element . '_' . $key, 'alpha');
+                $ecommerceExtrafieldsCorrespondence[$order_table_element][$key] = array(
+                    'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
+                    'activated' => !empty($activated) ? 1 : 0,
+                );
+            }
+
+            $order_line_table_element = 'commandedet';
+            $ecommerceExtrafieldsCorrespondence[$order_line_table_element] = array();
+
+            $orderLinesExtrafields = $efields->fetch_name_optionals_label($order_line_table_element);
+            foreach ($orderLinesExtrafields as $key => $label) {
+                if (preg_match('/^ecommerceext_/', $key)) continue;
+                $options_saved = $siteDb->parameters['ef_crp'][$order_line_table_element][$key];
+                $activated = GETPOST('act_ef_crp_' . $order_line_table_element . '_' . $key, 'alpha');
+                $correspondence = GETPOST('ef_crp_' . $order_line_table_element . '_' . $key, 'alpha');
+                $ecommerceExtrafieldsCorrespondence[$order_line_table_element][$key] = array(
+                    'correspondences' => !empty($activated) ? $correspondence : (isset($options_saved['correspondences']) ? $options_saved['correspondences'] : $key),
+                    'activated' => !empty($activated) ? 1 : 0,
+                );
+            }
+        }
+
+        if (!isset($_POST['ecommerce_realtime_dtoe_thirdparty']) && !isset($siteDb->parameters)) {
+            $ecommerceRealtimeDolibarrToECommerce = array(
+                'thirdparty' => 1,
+                'contact' => 1,
+                'product' => 1,
+                'order' => 1,
+            );
+        } else {
+            $ecommerceRealtimeDolibarrToECommerce = array(
+                'thirdparty' => !empty($_POST['ecommerce_realtime_dtoe_thirdparty']) ? 1 : 0,
+                'contact' => !empty($_POST['ecommerce_realtime_dtoe_contact']) ? 1 : 0,
+                'product' => !empty($_POST['ecommerce_realtime_dtoe_product']) ? 1 : 0,
+                'order' => !empty($_POST['ecommerce_realtime_dtoe_order']) ? 1 : 0,
+            );
+        }
+
+        $ecommerceProductSynchDirection = array(
+            'image' => GETPOST('ecommerce_product_image_synch_direction', 'alpha'),
+            'ref' => GETPOST('ecommerce_product_ref_synch_direction', 'alpha'),
+            'description' => GETPOST('ecommerce_product_description_synch_direction', 'alpha'),
+            'short_description' => GETPOST('ecommerce_product_short_description_synch_direction', 'alpha'),
+            'weight' => GETPOST('ecommerce_product_weight_synch_direction', 'alpha'),
+            'tax' => GETPOST('ecommerce_product_tax_synch_direction', 'alpha'),
+            'status' => GETPOST('ecommerce_product_status_synch_direction', 'alpha'),
+        );
+
+        $siteDb->parameters = array(
+            'order_status_etod' => $ecommerceOrderStatusForECommerceToDolibarr,
+            'order_status_dtoe' => $ecommerceOrderStatusForDolibarrToECommerce,
+            'ef_crp' => $ecommerceExtrafieldsCorrespondence,
+            'payment_cond' => $_POST['ecommerce_payment_cond'],
+            'realtime_dtoe' => $ecommerceRealtimeDolibarrToECommerce,
+            'product_synch_direction' => $ecommerceProductSynchDirection,
+        );
 
         $result = 0;
         if (intval($_POST['ecommerce_id']))
@@ -290,9 +290,9 @@ if ($_POST['site_form_detail_action'] == 'save')
         $error = '';
         if ($result > 0) {
             if ($siteDb->type == 2) { // Woocommerce
-                $result = ecommerceng_add_extrafields($db, $langs, [
+                $result = ecommerceext_add_extrafields($db, $langs, [
                     [
-                        'attrname' => "ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}",
+                        'attrname' => "ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}",
                         'label' => $langs->trans('ECommercengWoocommerceStatus', $siteDb->name),
                         'type' => 'select',
                         'pos' => 1,
@@ -311,7 +311,7 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'perms' => '',
                         'list' => 1,
                     ],[
-                        'attrname' => "ecommerceng_description_{$conf->entity}",
+                        'attrname' => "ecommerceext_description_{$conf->entity}",
                         'label' => 'ECommercengWoocommerceDescription',
                         'type' => 'text',
                         'pos' => 2,
@@ -326,7 +326,7 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'list' => 1,
                     ],
                     [
-                        'attrname' => "ecommerceng_short_description_{$conf->entity}",
+                        'attrname' => "ecommerceext_short_description_{$conf->entity}",
                         'label' => 'ECommercengWoocommerceShortDescription',
                         'type' => 'text',
                         'pos' => 3,
@@ -341,7 +341,7 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'list' => 1,
                     ],
                     [
-                        'attrname' => "ecommerceng_tax_class_{$siteDb->id}_{$conf->entity}",
+                        'attrname' => "ecommerceext_tax_class_{$siteDb->id}_{$conf->entity}",
                         'label' => $langs->trans('ECommercengWoocommerceTaxClass', $siteDb->name),
                         'type' => 'sellist',
                         'pos' => 4,
@@ -350,13 +350,13 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'unique' => 0,
                         'required' => 0,
                         'default_value' => '',
-                        'param' => array('options' => array("c_ecommerceng_tax_class:label:code::active=1 AND site_id={$siteDb->id} AND entity={$conf->entity}" => null)),
+                        'param' => array('options' => array("c_ecommerceext_tax_class:label:code::active=1 AND site_id={$siteDb->id} AND entity={$conf->entity}" => null)),
                         'alwayseditable' => 1,
                         'perms' => '',
                         'list' => 1,
                     ],
                     [
-                        'attrname' => "ecommerceng_online_payment_{$conf->entity}",
+                        'attrname' => "ecommerceext_online_payment_{$conf->entity}",
                         'label' => 'ECommercengWoocommerceOnlinePayment',
                         'type' => 'boolean',
                         'pos' => 1,
@@ -370,7 +370,7 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'perms' => '',
                         'list' => 1,
                     ],[
-                        'attrname' => "ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}",
+                        'attrname' => "ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}",
                         'label' => $langs->trans('ECommercengWoocommerceOrderStatus', $siteDb->name),
                         'type' => 'select',
                         'pos' => 2,
@@ -403,7 +403,7 @@ if ($_POST['site_form_detail_action'] == 'save')
             $db->commit();
 
             if ($siteDb->type == 2) { // Woocommerce
-                ecommerceng_update_woocommerce_dict_tax_class($db, $siteDb);
+                ecommerceext_update_woocommerce_dict_tax_class($db, $siteDb);
             }
             if (!empty($conf->global->PRODUIT_MULTIPRICES) && $siteDb->price_level != $last_price_level) {
                 updatePriceLevel($siteDb);
@@ -445,7 +445,7 @@ elseif ($_POST['site_form_detail_action'] == 'delete')
 }
 // Update dictionary for tax class of woocommerce
 elseif ($_POST['site_form_detail_action'] == 'update_woocommerce_tax_class') {
-    if (ecommerceng_update_woocommerce_dict_tax_class($db, $siteDb)) {
+    if (ecommerceext_update_woocommerce_dict_tax_class($db, $siteDb)) {
         setEventMessage($langs->trans('ECommercengWoocommerceDictTaxClassUpdated'));
     }
 }
@@ -456,7 +456,7 @@ elseif ($_POST['site_form_detail_action'] == 'update_woocommerce_tax_class') {
  *  View
  */
 
-/*if (! extension_loaded('soap'))
+if ($siteDb->type == 1 && ! extension_loaded('soap'))
 {
     llxHeader();
 
@@ -464,7 +464,7 @@ elseif ($_POST['site_form_detail_action'] == 'update_woocommerce_tax_class') {
 
     llxFooter();
     exit;
-}*/
+}
 
 $classCategorie = new Categorie($db);
 $productCategories = $classCategorie->get_full_arbo('product');
@@ -487,7 +487,7 @@ $ecommerceWebserviceAddressTest = '';
 if (!empty($ecommerceWebserviceAddress)) {
     switch ($ecommerceType) {
         case 1: // Magento
-            $ecommerceWebserviceAddressTest = $ecommerceWebserviceAddress .(substr($ecommerceWebserviceAddress, -1, 1)!='/'?'/':''). 'api/?wsdl';
+            $ecommerceWebserviceAddressTest = $ecommerceWebserviceAddress .(substr($ecommerceWebserviceAddress, -1, 1)!='/'?'/':''). 'soap/?wsdl_list=1';
             break;
         case 2: // Woocommerce
             $ecommerceWebserviceAddressTest = $ecommerceWebserviceAddress .(substr($ecommerceWebserviceAddress, -1, 1)!='/'?'/':''). 'wp-json/';
@@ -528,10 +528,10 @@ if (!empty($ecommerceId)) {
         //$urlwithouturlroot=preg_replace('/'.preg_quote(DOL_URL_ROOT,'/').'$/i','',trim($dolibarr_main_url_root));
         //$urlwithroot=$urlwithouturlroot.DOL_URL_ROOT;		// This is to use external domain name found into config file
         $uriFactory = new \OAuth\Common\Http\Uri\UriFactory();
-        //$currentUri = $uriFactory->createFromAbsolute($urlwithroot.'/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php?ecommerce_id='.$siteId);
-        $currentUri = $uriFactory->createFromAbsolute(dol_buildpath('/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$siteId);
+
+        $currentUri = $uriFactory->createFromAbsolute(dol_buildpath('/custom/ecommerceext/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$siteId);
         $ecommerceOAuthRedirectUri = $currentUri->getAbsoluteUri();
-//        $ecommerceOAuthRedirectUri = dol_buildpath('/custom/ecommerceng/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$ecommerceId;
+//        $ecommerceOAuthRedirectUri = dol_buildpath('/custom/ecommerceext/core/modules/oauth/wordpress_oauthcallback.php', 2).'?ecommerce_id='.$ecommerceId;
         $ecommerceOAuthId = ($_POST['ecommerce_oauth_id'] ? $_POST['ecommerce_oauth_id'] : $siteDb->oauth_id);
         $ecommerceOAuthSecret = ($_POST['ecommerce_oauth_secret'] ? $_POST['ecommerce_oauth_secret'] : $siteDb->oauth_secret);
 
@@ -543,7 +543,7 @@ if (!empty($ecommerceId)) {
         } catch(Exception $e) {}
         $ecommerceOAuthGenerateToken = (!empty($ecommerceOAuthId) && !empty($ecommerceOAuthSecret) || is_object($ecommerceOAuthTokenObj));
 
-        $ecommerceOAuthBackToUri = urlencode(dol_buildpath('/custom/ecommerceng/admin/eCommerceSetup.php', 2).'?ecommerce_id='.$ecommerceId);
+        $ecommerceOAuthBackToUri = urlencode(dol_buildpath('/custom/ecommerceext/admin/eCommerceSetup.php', 2).'?ecommerce_id='.$ecommerceId);
 
         if (is_object($ecommerceOAuthTokenObj)) {
             $ecommerceOAuthTokenExpired = ($ecommerceOAuthTokenObj->getEndOfLife() !== $ecommerceOAuthTokenObj::EOL_NEVER_EXPIRES && $ecommerceOAuthTokenObj->getEndOfLife() !== $ecommerceOAuthTokenObj::EOL_UNKNOWN && time() > ($ecommerceOAuthTokenObj->getEndOfLife() - 30));
@@ -565,9 +565,9 @@ if (!empty($ecommerceId)) {
         $efields = new ExtraFields($db);
         $efields->fetch_name_optionals_label('commande', true);
         $ecommerceOrderStatusForECommerceToDolibarr = array();
-        if (isset($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options']) &&
-            is_array($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options'])) {
-            foreach ($efields->attribute_param["ecommerceng_wc_status_{$siteDb->id}_{$conf->entity}"]['options'] as $key => $value) {
+        if (isset($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options']) &&
+            is_array($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options'])) {
+            foreach ($efields->attribute_param["ecommerceext_wc_status_{$siteDb->id}_{$conf->entity}"]['options'] as $key => $value) {
                 if (($pos = strpos($key , '_')) > 0) $key = substr($key, $pos + 1);
                 $selected = GETPOST('order_status_etod_' . $key, 'alpha');
                 $selected = $selected ? $selected : (isset($siteDb->parameters['order_status_etod'][$key]['selected']) ? $siteDb->parameters['order_status_etod'][$key]['selected'] : '');
@@ -626,7 +626,7 @@ if (!empty($ecommerceId)) {
 
             $tempExtrafields = $extrafields->fetch_name_optionals_label($product_table_element);
             foreach ($tempExtrafields as $key => $label) {
-                if (preg_match('/^ecommerceng_/', $key)) continue;
+                if (preg_match('/^ecommerceext_/', $key)) continue;
                 $productExtrafields[$key] = $label;
                 $options_saved = $siteDb->parameters['ef_crp'][$product_table_element][$key];
                 $ecommerceExtrafieldsCorrespondence[$product_table_element][$key] = array(
@@ -642,7 +642,7 @@ if (!empty($ecommerceId)) {
 
             $tempExtrafields = $extrafields->fetch_name_optionals_label($order_table_element);
             foreach ($tempExtrafields as $key => $label) {
-                if (preg_match('/^ecommerceng_/', $key)) continue;
+                if (preg_match('/^ecommerceext_/', $key)) continue;
                 $orderExtrafields[$key] = $label;
                 $options_saved = $siteDb->parameters['ef_crp'][$order_table_element][$key];
                 $ecommerceExtrafieldsCorrespondence[$order_table_element][$key] = array(
@@ -657,7 +657,7 @@ if (!empty($ecommerceId)) {
 
             $tempExtrafields = $extrafields->fetch_name_optionals_label($order_line_table_element);
             foreach ($tempExtrafields as $key => $label) {
-                if (preg_match('/^ecommerceng_/', $key)) continue;
+                if (preg_match('/^ecommerceext_/', $key)) continue;
                 $orderLinesExtrafields[$key] = $label;
                 $options_saved = $siteDb->parameters['ef_crp'][$order_line_table_element][$key];
                 $ecommerceExtrafieldsCorrespondence[$order_line_table_element][$key] = array(
@@ -687,7 +687,7 @@ else
     $title = $langs->trans('ECommerceCreateSite');
 
 //SHOW PAGE
-$urltpl=dol_buildpath('/ecommerceng/admin/tpl/eCommerceSetup.tpl.php',0);
+$urltpl=dol_buildpath('/custom/ecommerceext/admin/tpl/eCommerceSetup.tpl.php',0);
 include($urltpl);
 
 if ($siteDb->type == 1) {

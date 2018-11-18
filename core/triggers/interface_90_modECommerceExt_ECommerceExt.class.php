@@ -19,11 +19,11 @@
  */
 
 
-dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
+dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
 
 require_once(DOL_DOCUMENT_ROOT.'/expedition/class/expedition.class.php');
 
-class InterfaceECommerceng
+class InterfaceECommerceExt
 {
     private $db;
     private $name;
@@ -85,7 +85,7 @@ class InterfaceECommerceng
 
     /**
      *      Fonction appelee lors du declenchement d'un evenement Dolibarr.
-     *      D'autres fonctions run_trigger peuvent etre presentes dans includes/triggers
+     *      D'autres fonctions runTrigger peuvent etre presentes dans includes/triggers
      *
      *      @param      string      $action      Code de l'evenement
      *      @param      Object      $object      Objet concerne
@@ -94,7 +94,7 @@ class InterfaceECommerceng
      *      @param      Conf        $conf        Objet conf
      *      @return     int                      <0 if fatal error, 0 si nothing done, >0 if ok
      */
-	function run_trigger($action,$object,$user,$langs,$conf)
+	function runTrigger($action,$object,$user,$langs,$conf)
     {
     	$error=0;
 
@@ -138,7 +138,7 @@ class InterfaceECommerceng
 
 			    if (! $error)
 			    {
-			        if (empty($site->parameters['realtime_dtoe']['thridparty'])) {
+			        if (empty($site->parameters['realtime_dtoe']['thirdparty'])) {
                         dol_syslog("Triggers disabled from the config of the module");
                         continue;
                     }

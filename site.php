@@ -33,9 +33,14 @@ if (! $res && file_exists("../../../main.inc.php")) $res=@include("../../../main
 if (! $res) die("Include of main fails");
 
 include_once DOL_DOCUMENT_ROOT.'/core/lib/date.lib.php';
-dol_include_once("/ecommerceng/class/business/eCommerceSynchro.class.php");
+include_once DOL_DOCUMENT_ROOT.'/compta/bank/class/account.class.php';
+dol_include_once("/ecommerceext/class/business/eCommerceSynchro.class.php");
 
-$langs->load("ecommerce@ecommerceng");
+$langs->load("ecommerce@ecommerceext");
+$langs->load("admin");
+$langs->load("ecommerce");
+
+
 $errors = array();
 $success = array();
 $site = null;
@@ -46,11 +51,8 @@ $nbSocieteInDolibarr = 0;
 $nbCommandeInDolibarr = 0;
 $nbFactureInDolibarr = 0;
 
-$langs->load("admin");
-$langs->load("ecommerce");
-
 // Protection if external user
-if ($user->societe_id > 0 || !$user->rights->ecommerceng->read)
+if ($user->societe_id > 0 || !$user->rights->ecommerceext->read)
 {
 	accessforbidden();
 }
@@ -98,18 +100,34 @@ if ($id)
 
 		require_once(DOL_DOCUMENT_ROOT.'/core/lib/functions2.lib.php');
 		$params=getSoapParams();
-		if (! empty($params['response_timeout'])) set_time_limit($params['response_timeout']);
+
+		// Response timeout
+		if (!empty($conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT)) {
+			$response_timeout = $conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT;
+		} else if (!empty($params['response_timeout'])) {
+			$response_timeout = $params['response_timeout'];
+		} else {
+			$response_timeout = 600;
+		}
+		$memoryLimit = '1024M';
+
+		dol_syslog("Site ID {$site->id}: Set max_execution_time=" . $response_timeout . " default_socket_timeout=" .
+			$response_timeout . " memory_limit=" . $memoryLimit, LOG_DEBUG);
+
+		@ini_set('max_execution_time', $response_timeout);
+		@ini_set('default_socket_timeout', $response_timeout);
+		@ini_set("memory_limit", $memoryLimit);
 
 		// Define date max (synch is done for element modified before)
 		$toDate=null;
 		if (! empty($to_date)) $toDate=dol_stringtotime($to_date);
 
 		$toNb=0;
-		if ($to_nb == '') $to_nb=(empty($conf->global->ECOMMERCENG_MAXRECORD_PERSYNC)?'':$conf->global->ECOMMERCENG_MAXRECORD_PERSYNC);     // If '0', we keep 0
+		if ($to_nb == '') $to_nb=(empty($conf->global->ECOMMERCE_MAXRECORD_PERSYNC)?'':$conf->global->ECOMMERCE_MAXRECORD_PERSYNC);     // If '0', we keep 0
 		if (! empty($to_nb)) $toNb=$to_nb;
 
         $toNbDToE=0;
-        if ($dtoe_to_nb == '') $dtoe_to_nb=(empty($conf->global->ECOMMERCENG_MAXRECORD_PERSYNC)?'':$conf->global->ECOMMERCENG_MAXRECORD_PERSYNC);     // If '0', we keep 0
+        if ($dtoe_to_nb == '') $dtoe_to_nb=(empty($conf->global->ECOMMERCE_MAXRECORD_PERSYNC)?'':$conf->global->ECOMMERCE_MAXRECORD_PERSYNC);     // If '0', we keep 0
         if (! empty($dtoe_to_nb)) $toNbDToE=$dtoe_to_nb;
 
 		$synchro = new eCommerceSynchro($db, $site, $toDate, $toNb);          // $synchro->toDate will be set to dol_now if toDate no defined.
@@ -137,7 +155,7 @@ if ($id)
 		}*/
 
 		//synch only with write rights
-		if (! $error && $user->rights->ecommerceng->write)
+		if (! $error && $user->rights->ecommerceext->write)
 		{
 			if (in_array(GETPOST('reset_data'), array('categories_links', 'products_links', 'thirdparties_links', 'orders_links', 'invoices_links')))
 			{
@@ -231,19 +249,19 @@ if ($id)
 		// Count into Magento
 	    if (! GETPOST('test_with_no_categ_count'))
 	    {
-			if (! $error && empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) $nbCategoriesToUpdate = $synchro->getNbCategoriesToUpdate(true);
+			if (! $error && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) $nbCategoriesToUpdate = $synchro->getNbCategoriesToUpdate(true);
 			else $nbCategoriesToUpdate='?';
 			if ($nbCategoriesToUpdate < 0) $error++;
 	    }
 	    if (! GETPOST('test_with_no_product_count'))
 	    {
-	    	if (! $error && empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) $nbProductToUpdate = $synchro->getNbProductToUpdate(true);
+	    	if (! $error && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) $nbProductToUpdate = $synchro->getNbProductToUpdate(true);
 	    	else $nbProductToUpdate='?';
 			if ($nbProductToUpdate < 0) $error++;
 	    }
 	    if (! GETPOST('test_with_no_thirdparty_count'))
 	    {
-	    	if (! $error && empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) $nbSocieteToUpdate = $synchro->getNbSocieteToUpdate(true);
+	    	if (! $error && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) $nbSocieteToUpdate = $synchro->getNbSocieteToUpdate(true);
 	    	else $nbSocieteToUpdate='?';
 	    	if ($nbSocieteToUpdate < 0) $error++;
 	    }
@@ -251,7 +269,7 @@ if ($id)
 	    {
 		    if (! empty($conf->commande->enabled))
 	        {
-    	        if (! $error && empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) $nbCommandeToUpdate = $synchro->getNbCommandeToUpdate(true);
+    	        if (! $error && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) $nbCommandeToUpdate = $synchro->getNbCommandeToUpdate(true);
     	        else $nbCommandeToUpdate='?';
         	    if ($nbCommandeToUpdate < 0) $error++;
             }
@@ -260,7 +278,7 @@ if ($id)
 	    {
 		    if (! empty($conf->facture->enabled))
 	        {
-	            if (! $error && empty($conf->global->ECOMMERCENG_NO_COUNT_UPDATE)) $nbFactureToUpdate = $synchro->getNbFactureToUpdate(true);
+	            if (! $error && empty($conf->global->ECOMMERCE_NO_COUNT_UPDATE)) $nbFactureToUpdate = $synchro->getNbFactureToUpdate(true);
     	        else $nbFactureToUpdate='?';
 	            if ($nbFactureToUpdate < 0) $error++;
 	        }
@@ -288,7 +306,7 @@ if ($id)
         else $nbProductToUpdateDToE='?';
         if ($nbProductToUpdateDToE < 0) $error++;
 
-		if ($user->rights->ecommerceng->write)
+		if ($user->rights->ecommerceext->write)
 			$synchRights = true;                // Set permission ok for .tpl
 
 		if (count($synchro->success))
@@ -316,7 +334,7 @@ if (GETPOST('submit_synchro_category_ajax') || GETPOST('submit_synchro_product_a
 else
 {
     // Return HTML page content
-    $urltpl=dol_buildpath('/ecommerceng/tpl/site.tpl.php',0);
+    $urltpl=dol_buildpath('/custom/ecommerceext/tpl/site.tpl.php',0);
     include($urltpl);
 }
 

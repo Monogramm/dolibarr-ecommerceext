@@ -1,8 +1,19 @@
 <?php
+
+// Protection to avoid direct call of template
+if (empty($conf) || ! is_object($conf))
+{
+	print "Error, template page can't be called as URL";
+	exit;
+}
+
+$form = new Form($db);
+
+
 llxHeader();
 
 $linkback='';
-print load_fiche_titre($langs->trans("ECommerceDashboard"), $linkback, 'eCommerceTitle@ecommerceng');
+print load_fiche_titre($langs->trans("ECommerceDashboard"), $linkback, 'eCommerceTitle@ecommerceext');
 
 print '<br>';
 
@@ -31,15 +42,14 @@ $var=!$var;
 						print $langs->trans('ECommerceNoUpdateSite');
 				?>
 			</td>
-			<td><div style="inline-block">
-				<form class="inline-block" style="margin-right: 10px" name="form_index" id="form_detailed" action="<?php print dol_buildpath('/ecommerceng/site.php',1); ?>?id=<?php echo $site->id ?><?php echo GETPOST('to_date','int')?'&to_date='.GETPOST('to_date','int'):''; ?>" method="post">
-					<input type="hidden" name="id" value="<?php print $site->id ?>">
-					<input class="button" type="submit" name="submit_detailed" value="<?php print $langs->trans('ECommerceUpdateSite') ?>">
-				</form>
-				<form class="inline-block" name="form_index" id="form_global" action="<?php print dol_buildpath('/ecommerceng/site.php', 1); ?>?id=<?php echo $site->id; ?><?php echo GETPOST('to_date','int')?'&to_date='.GETPOST('to_date','int'):''; ?>" method="post">
-					<input type="hidden" name="id" value="<?php print $site->id ?>">
-					<input class="button" type="submit" name="submit_synchro_all" value="<?php print $langs->trans('ECommerceUpdateAll') ?>">
-				</form>
+			<td>
+				<div style="inline-block">
+					<a class="button" 
+						href="<?php print dol_buildpath('/custom/ecommerceext/site.php',1); ?>?id=<?php echo $site->id ?><?php echo GETPOST('to_date','int')?'&to_date='.GETPOST('to_date','int'):''; ?>"
+						><?php print $langs->trans('ECommerceUpdateSite') ?></a>
+					<a class="button" 
+						href="<?php print dol_buildpath('/custom/ecommerceext/site.php', 1); ?>?id=<?php echo $site->id; ?><?php echo GETPOST('to_date','int')?'&to_date='.GETPOST('to_date','int'):''; ?>"
+						><?php print $langs->trans('ECommerceUpdateAll') ?></a>
 				</div>
 			</td>
 			<td>

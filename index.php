@@ -33,10 +33,10 @@ if (! $res && file_exists("../../main.inc.php")) $res=@include("../../main.inc.p
 if (! $res && file_exists("../../../main.inc.php")) $res=@include("../../../main.inc.php");
 if (! $res) die("Include of main fails");
 
-dol_include_once("/ecommerceng/class/data/eCommerceSite.class.php");
+dol_include_once("/ecommerceext/class/data/eCommerceSite.class.php");
 
 $langs->load("admin");
-$langs->load("ecommerce@ecommerceng");
+$langs->load("ecommerce@ecommerceext");
 //$langs->load("companies");
 //$langs->load("users");
 //$langs->load("orders");
@@ -48,7 +48,7 @@ $langs->load("ecommerce@ecommerceng");
 ****************************************************/
 //CHECK ACCESS
 // Protection if external user
-if ($user->societe_id > 0 || !$user->rights->ecommerceng->read)
+if ($user->societe_id > 0 || !$user->rights->ecommerceext->read)
 {
 	accessforbidden();
 }
@@ -65,7 +65,7 @@ $sites = $eCommerceSite->listSites('object');
 ****************************************************/
 $var=true;
 
-$urltpl=dol_buildpath('/ecommerceng/tpl/index.tpl.php',0);
+$urltpl=dol_buildpath('/custom/ecommerceext/tpl/index.tpl.php',0);
 include($urltpl);
 
 $db->close();

@@ -5,7 +5,7 @@
  */
 
 require_once DOL_DOCUMENT_ROOT.'/includes/OAuth/bootstrap.php';
-dol_include_once('/ecommerceng/includes/CurlClientEx.php');
+dol_include_once('/ecommerceext/includes/CurlClientEx.php');
 
 use OAuth\Common\Storage\DoliStorage;
 use OAuth\Common\Consumer\Credentials;

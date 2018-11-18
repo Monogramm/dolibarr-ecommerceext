@@ -19,7 +19,7 @@
  */
 
 
-dol_include_once('/ecommerceng/class/data/eCommerceSociete.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSociete.class.php');
 
 class eCommerceSite // extends CommonObject
 {
@@ -55,7 +55,7 @@ class eCommerceSite // extends CommonObject
     var $parameters;
 
 	//The site type name is used to define class name in eCommerceRemoteAccess class
-    private $siteTypes = array(2=>'woocommerce');
+    private $siteTypes = array(/*1=>'magento', */2=>'woocommerce');
 
     /**
      * Constructor

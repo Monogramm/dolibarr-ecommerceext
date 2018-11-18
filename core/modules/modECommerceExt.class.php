@@ -22,15 +22,15 @@ require_once(DOL_DOCUMENT_ROOT.'/core/modules/DolibarrModules.class.php');
 require_once(DOL_DOCUMENT_ROOT.'/core/lib/files.lib.php');
 require_once(DOL_DOCUMENT_ROOT.'/societe/class/societe.class.php');
 
-dol_include_once('/ecommerceng/admin/class/gui/eCommerceMenu.class.php');
-dol_include_once('/ecommerceng/admin/class/data/eCommerceDict.class.php');
-dol_include_once('/ecommerceng/class/data/eCommerceSite.class.php');
+dol_include_once('/ecommerceext/admin/class/gui/eCommerceMenu.class.php');
+dol_include_once('/ecommerceext/admin/class/data/eCommerceDict.class.php');
+dol_include_once('/ecommerceext/class/data/eCommerceSite.class.php');
 
 
 /**
  *  Description and activation class for module ECommerce
  */
-class modECommerceNg extends DolibarrModules
+class modECommerceExt extends DolibarrModules
 {
 	/**
 	 *   Constructor. Define names, constants, directories, boxes, permissions
@@ -45,31 +45,29 @@ class modECommerceNg extends DolibarrModules
 
 		// Id for module (must be unique).
 		// Use here a free id (See in Home -> System information -> Dolibarr for list of used modules id).
-		$this->numero = 107100;
+		$this->numero = 107200;
 		// Key text used to identify module (for permissions, menus, etc...)
-		$this->rights_class = 'ecommerceng';
+		$this->rights_class = 'ecommerceext';
 
 		// Family can be 'crm','financial','hr','projects','products','ecm','technic','other'
 		// It is used to group modules in module setup page
-		$this->family = "other";
+		$this->family = "interface";
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
-		$this->name = 'EcommerceNg';        //  Must be same than value used for if $conf->ecommerceng->enabled
+		$this->name = preg_replace('/^mod/i','',get_class($this));        //  Must be same than value used for if $conf->ecommerceext->enabled
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
 		$this->description = "Module to synchronise Dolibarr with ECommerce platform (currently ecommerce supported: WooCommerce)";
-		$this->descriptionlong = "See page https://wiki.dolibarr.org/index.php/Module_Magento_EN for more information";
-		$this->editor_name = 'Open-Dsi';
-		$this->editor_url = 'http://www.open-dsi.fr';
+		$this->descriptionlong = "See page https://github.com/Monogramm/dolibarr-ecommerceext for more information";
+		$this->editor_name = 'Monogramm';
+		$this->editor_url = 'http://www.monogramm.io';
 
 		// Possible values for version are: 'development', 'experimental', 'dolibarr' or version
-		$this->version = '4.0.25';
+		$this->version = '4.1.0';
 		// Key used in llx_const table to save module status enabled/disabled (where MYMODULE is value of property name of module in uppercase)
 		$this->const_name = 'MAIN_MODULE_'.strtoupper($this->name);
-		// Where to store the module in setup page (0=common,1=interface,2=others,3=very specific)
-		$this->special = 1;
 		// Name of image file used for this module.
 		// If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
 		// If file is in module/images directory, use this->picto=DOL_URL_ROOT.'/module/images/file.png'
-		$this->picto='eCommerce.png@ecommerceng';
+		$this->picto='eCommerce.png@ecommerceext';
 
         // Defined all module parts (triggers, login, substitutions, menus, css, etc...)
 		// for default path (eg: /mymodule/core/xxxxx) (0=disable, 1=enable)
@@ -99,25 +97,26 @@ class modECommerceNg extends DolibarrModules
 		// Relative path to module style sheet if exists. Example: '/mymodule/mycss.css'.
 		$this->style_sheet = '';
 
-		// Config pages. Put here list of php page names stored in admmin directory used to setup module.
-		$this->config_page_url = array('eCommerceSetup.php@ecommerceng');
+		// Config pages. Put here list of php page names stored in admin directory used to setup module.
+		$this->config_page_url = array('eCommerceSetup.php@ecommerceext');
 
 		// Dependencies
 		$this->depends = array("modSociete","modProduct","modCategorie","modWebServices");		// List of modules id that must be enabled if this module is enabled
 		$this->requiredby = array();	// List of modules id to disable if this one is disabled
 		$this->phpmin = array(5,3);					// Minimum version of PHP required by module
 		$this->need_dolibarr_version = array(3,9);	// Minimum version of Dolibarr required by module
-		$this->langfiles = array("ecommerce@ecommerceng", "woocommerce@ecommerceng");
+		$this->langfiles = array("ecommerce@ecommerceext", "woocommerce@ecommerceext");
 
 		// Constants
 		// List of particular constants to add when module is enabled
 		$this->const = array(
-		    0=>array('ECOMMERCENG_SHOW_DEBUG_TOOLS', 'chaine', '1', 'Enable button to clean database for debug purpose', 1, 'allentities', 1),
-		    1=>array('ECOMMERCENG_DEBUG', 'chaine', '0', 'This is to enable ECommerceng log of web services requests', 1, 'allentities', 0),
-		    2=>array('ECOMMERCENG_MAXSIZE_MULTICALL', 'chaine', '400', 'Max size for multicall', 1, 'allentities', 0),
-			3=>array('ECOMMERCENG_MAXRECORD_PERSYNC', 'chaine', '2000', 'Max nb of record per synch', 1, 'allentities', 0),
-			4=>array('ECOMMERCENG_ENABLE_LOG_IN_NOTE', 'chaine', '0', 'Store into private note the last full response returned by web service', 1, 'allentities', 0),
-            5=>array('ECOMMERCENG_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK', 'chaine', '1', '', 0, 'current', 0),
+		    0=>array('ECOMMERCE_SHOW_DEBUG_TOOLS', 'chaine', '0', 'Enable button to clean database for debug purpose', 1, 'allentities', 1),
+		    1=>array('ECOMMERCE_DEBUG', 'chaine', '0', 'This is to enable ECommerce log of web services requests', 1, 'allentities', 0),
+		    2=>array('ECOMMERCE_MAXSIZE_MULTICALL', 'chaine', '400', 'Max size for multicall', 1, 'allentities', 0),
+			3=>array('ECOMMERCE_MAXRECORD_PERSYNC', 'chaine', '2000', 'Max nb of record per synch', 1, 'allentities', 0),
+			4=>array('ECOMMERCE_ENABLE_LOG_IN_NOTE', 'chaine', '0', 'Store into private note the last full response returned by web service', 1, 'allentities', 0),
+			5=>array('ECOMMERCE_WOOCOMMERCE_ORDER_STATUS_LVL_CHECK', 'chaine', '1', '', 0, 'current', 0),
+			6=>array('ECOMMERCE_MAX_RESPONSE_TIMEOUT', 'chaine', '600', 'Max timeout for API calls', 1, 'allentities', 0),
 		);
 
 		// Array to add new pages in new tabs
@@ -134,26 +133,26 @@ class modECommerceNg extends DolibarrModules
 		// 'member'           to add a tab in fundation member view
 		// 'contract'         to add a tab in contract view
 
-        if (! isset($conf->ecommerceng) || ! isset($conf->ecommerceng->enabled))
+        if (! isset($conf->ecommerceext) || ! isset($conf->ecommerceext->enabled))
         {
-            $conf->ecommerceng=new stdClass();
-            $conf->ecommerceng->enabled=0;
+            $conf->ecommerceext=new stdClass();
+            $conf->ecommerceext->enabled=0;
         }
 
         $eCommerceSite = new eCommerceSite($this->db);
 
         // Dictionaries
 		$this->dictionaries=array(
-		    'langs'=>'woocommerce@ecommerceng',
-            'tabname'=>array(MAIN_DB_PREFIX."c_ecommerceng_tax_class"),
+		    'langs'=>'woocommerce@ecommerceext',
+            'tabname'=>array(MAIN_DB_PREFIX."c_ecommerce_tax_class"),
             'tablib'=>array("ECommercengWoocommerceDictTaxClass"),
-            'tabsql'=>array('SELECT f.rowid as rowid, f.site_id, f.code, f.label, f.entity, f.active FROM '.MAIN_DB_PREFIX.'c_ecommerceng_tax_class as f WHERE f.entity='.$conf->entity),
+            'tabsql'=>array('SELECT f.rowid as rowid, f.site_id, f.code, f.label, f.entity, f.active FROM '.MAIN_DB_PREFIX.'c_ecommerce_tax_class as f WHERE f.entity='.$conf->entity),
             'tabsqlsort'=>array("site_id ASC, label ASC"),
             'tabfield'=>array("code,label,site_id"),
             'tabfieldvalue'=>array("code,label,site_id"),
             'tabfieldinsert'=>array("code,label,site_id"),
             'tabrowid'=>array("rowid"),
-            'tabcond'=>array($conf->ecommerceng->enabled && $eCommerceSite->hasTypeSite(2)),
+            'tabcond'=>array($conf->ecommerceext->enabled && $eCommerceSite->hasTypeSite(2)),
         );
 
         /* Example:
@@ -185,28 +184,28 @@ class modECommerceNg extends DolibarrModules
 		// Cronjobs
 		//------------
 		$this->cronjobs = array(
-			0=>array('label'=>'AutoSyncEcommerceNg', 'jobtype'=>'method', 'class'=>'ecommerceng/class/business/eCommerceUtils.class.php', 'objectname'=>'eCommerceUtils', 'method'=>'synchAll', 'parameters'=>'100', 'comment'=>'Synchronize all data from eCommerce to Dolibarr. Parameter is max nb of record to do per synchronization run.', 'frequency'=>1, 'unitfrequency'=>86400, 'priority'=>90, 'status'=>0, 'test'=>true),
+			0=>array('label'=>'AutoSyncEcommerceExt', 'jobtype'=>'method', 'class'=>'ecommerceext/class/business/eCommerceUtils.class.php', 'objectname'=>'eCommerceUtils', 'method'=>'synchAll', 'parameters'=>'100', 'comment'=>'Synchronize all data from eCommerce to Dolibarr. Parameter is max nb of record to do per synchronization run.', 'frequency'=>1, 'unitfrequency'=>86400, 'priority'=>90, 'status'=>0, 'test'=>true),
 		);
 
 		// Permissions
 		$this->rights = array();		// Permission array used by this module
-		$this->rights_class = 'ecommerceng';
+		$this->rights_class = 'ecommerceext';
 		$r=0;
 
 		$r++;
-		$this->rights[$r][0] = 107101;
+		$this->rights[$r][0] = 107201;
 		$this->rights[$r][1] = 'See synchronization status';
 		$this->rights[$r][3] = 1;
 		$this->rights[$r][4] = 'read';
 
 		$r++;
-		$this->rights[$r][0] = 107102;
+		$this->rights[$r][0] = 107202;
 		$this->rights[$r][1] = 'Synchronize';
 		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'write';
 
 		$r++;
-		$this->rights[$r][0] = 107103;
+		$this->rights[$r][0] = 107203;
 		$this->rights[$r][1] = 'Configure websites';
 		$this->rights[$r][3] = 0;
 		$this->rights[$r][4] = 'site';
@@ -228,7 +227,7 @@ class modECommerceNg extends DolibarrModules
 		$r=0;
 
 		// Add here entries to declare new menus
-		//if (! empty($conf->modules['ecommerceng']))     // Do not run this code if module is not yet enabled (tables does not exists yet)
+		//if (! empty($conf->modules['ecommerceext']))     // Do not run this code if module is not yet enabled (tables does not exists yet)
 		//{
     		$eCommerceMenu = new eCommerceMenu($this->db,null,$this);
 	        $this->menu = $eCommerceMenu->getMenu();
@@ -314,7 +313,7 @@ class modECommerceNg extends DolibarrModules
 	 */
 	function load_tables()
 	{
-		return $this->_load_tables('/ecommerceng/sql/');
+		return $this->_load_tables('/ecommerceext/sql/');
 	}
 
 	/**
@@ -404,7 +403,7 @@ class modECommerceNg extends DolibarrModules
    	 */
    	private function addFiles()
    	{
-        $srcFile = dol_buildpath('/ecommerceng/patchs/dolibarr/includes/OAuth/OAuth2/Service/WordPress.php');
+        $srcFile = dol_buildpath('/custom/ecommerceext/patchs/dolibarr/includes/OAuth/OAuth2/Service/WordPress.php');
         $destFile = DOL_DOCUMENT_ROOT . '/includes/OAuth/OAuth2/Service/WordPress.php';
 
         if (dol_copy($srcFile, $destFile) < 0) {

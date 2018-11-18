@@ -15,15 +15,15 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
+dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
 
 /**
- *  \file       htdocs/ecommerceng/class/actions_ecommerceng.class.php
- *  \ingroup    ecommerceng
+ *  \file       htdocs/ecommerceext/class/actions_ecommerceext.class.php
+ *  \ingroup    ecommerceext
  *  \brief      File for hooks
  */
 
-class ActionsECommerceNg
+class ActionsECommerceExt
 {
     /**
      * Overloading the doActions function : replacing the parent's function with the one below
@@ -122,7 +122,7 @@ class ActionsECommerceNg
         global $conf, $user, $langs;
 
         if (in_array('productcard', explode(':', $parameters['context']))) {
-            if ($user->rights->ecommerceng->write) {
+            if ($user->rights->ecommerceext->write) {
                 // Site list
                 $sites = $this->getLinkedToECommerce($object);
                 if (count($sites) > 0) {
@@ -198,7 +198,7 @@ class ActionsECommerceNg
         if ((in_array('expeditioncard', explode(':', $parameters['context'])) && ($action == 'confirm_valid' || $action == 'builddoc')) ||
             (in_array('invoicecard', explode(':', $parameters['context'])) && ($action == 'confirm_valid' || $action == 'builddoc'))
         ) {
-            if (!empty($conf->global->ECOMMERCENG_ENABLE_SEND_FILE_TO_ORDER)) {
+            if (!empty($conf->global->ECOMMERCE_ENABLE_SEND_FILE_TO_ORDER)) {
                 $commande_id = 0;
                 $societe_id = 0;
                 $object_src = $parameters['object'];
@@ -227,7 +227,7 @@ class ActionsECommerceNg
 
                             if ($eCommerceCommande->remote_id > 0 && $eCommerceSociete->remote_id > 0) {
                                 $eCommerceSynchro = new eCommerceSynchro($db, $site);
-                                dol_syslog("Hook ActionsECommerceNg::afterPDFCreation try to connect to eCommerce site " . $site->name);
+                                dol_syslog("Hook ActionsECommerceExt::afterPDFCreation try to connect to eCommerce site " . $site->name);
                                 $eCommerceSynchro->connect();
                                 if (count($eCommerceSynchro->errors)) {
                                     $error++;
@@ -277,7 +277,7 @@ class ActionsECommerceNg
         if ((in_array('expeditioncard', explode(':', $parameters['context'])) && ($action == 'confirm_valid' || $action == 'builddoc')) ||
             (in_array('invoicecard', explode(':', $parameters['context'])) && ($action == 'confirm_valid' || $action == 'builddoc'))
         ) {
-            if (!empty($conf->global->ECOMMERCENG_ENABLE_SEND_FILE_TO_ORDER)) {
+            if (!empty($conf->global->ECOMMERCE_ENABLE_SEND_FILE_TO_ORDER)) {
                 $commande_id = 0;
                 $societe_id = 0;
                 $object_src = $parameters['object'];
@@ -306,7 +306,7 @@ class ActionsECommerceNg
 
                             if ($eCommerceCommande->remote_id > 0 && $eCommerceSociete->remote_id > 0) {
                                 $eCommerceSynchro = new eCommerceSynchro($db, $site);
-                                dol_syslog("Hook ActionsECommerceNg::afterPDFCreation try to connect to eCommerce site " . $site->name);
+                                dol_syslog("Hook ActionsECommerceExt::afterPDFCreation try to connect to eCommerce site " . $site->name);
                                 $eCommerceSynchro->connect();
                                 if (count($eCommerceSynchro->errors)) {
                                     $error++;
@@ -348,7 +348,7 @@ class ActionsECommerceNg
      */
     private function isLinkedToECommerce(&$object)
     {
-        dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
+        dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
         $isLinkedToECommerce = false;
 
         // Get current categories and subcategories
@@ -395,7 +395,7 @@ class ActionsECommerceNg
      */
     private function getLinkedToECommerce(&$object)
     {
-        dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
+        dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
         $linkedToECommerce = array();
 
         // Get current categories and subcategories
@@ -442,7 +442,7 @@ class ActionsECommerceNg
      */
     private function isImageSync(&$object)
     {
-        dol_include_once('/ecommerceng/class/business/eCommerceSynchro.class.php');
+        dol_include_once('/ecommerceext/class/business/eCommerceSynchro.class.php');
         $isImageSync = false;
 
         $eCommerceSite = new eCommerceSite($object->db);

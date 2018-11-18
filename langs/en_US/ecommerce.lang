@@ -1,62 +1,71 @@
-# Dolibarr language file - en_Us - magento
+# Dolibarr language file - en_Us - e-commerce
 CHARSET=UTF-8
 
 ##PERMISSIONS##
-Permission107101=Lire les statuts de synchronisation des sites e-commerce
-Permission107102=Synchroniser les sites e-commerce
-Permission107103=Configurer les sites e-commerce
+Permission107201=Read the synchronization status of e-commerce sites
+Permission107202=Synchronize e-commerce sites
+Permission107203=Configure e-commerce sites
 
 ##ADMIN##
-Module107100Name=Woosync
-Module107100Desc=Module de synchronisation entre Dolibarr et les plateformes e-commerce WooCommerce
-NothingToSetup=Activez le module pour accéder à sa configuration
+Module107200Name=eCommerceExt
+Module107200Desc=Synchronization module between Dolibarr and e-commerce platforms
+NothingToSetup=Activate the module to access its configuration
 
 ##SETUP##
+magento=Magento
+woocommerce=WooCommerce
+ECommerceToDolibarr=From e-commerce to Dolibarr
+DolibarrToECommerce=From Dolibarr to e-commerce
 ECommercePriceType=Imported prices' types
 ECommercePriceTypeHT=Tax excluded
 ECommercePriceTypeTTC=Tax included
-ECommercePriceTypeDescription=Define the VAT application on E-Commerce's imported products' prices (TE or TI)
+ECommercePriceTypeDescription=Define the VAT application on e-commerce's imported products' prices (TE or TI)
 ECommerceMagentoUseSpecialPriceDescription=Check to import Magento's special prices instead of public prices (public price will be imported only if special price is not defined)
 ECommerceMagentoUseSpecialPrice=Use Magento's special price
-ECommerceDashboard=ECommerce synchronization management dashboard
-ECommerceSetup=Ecommerce module configuration
-ECommerceAddNewSite=Add a new Ecommerce site
-ECommerceCreateSite=Create a new Ecommerce site
-ECommerceSetupSite=Ecommerce configuration
-ECommerceSiteName=Ecommerce name
+ECommerceDashboard=e-commerce synchronization management dashboard
+ECommerceSetup=e-commerce module configuration
+ECommerceAddNewSite=Add a new e-commerce site
+ECommerceCreateSite=Create a new e-commerce site
+ECommerceSetupSite=e-commerce configuration
+
+ECommerceSiteName=e-commerce name
+ECommerceSiteNameDescription=Name that will be displayed in the list of e-commerce sites in Dolibarr (example : "My Big online Shop")
 ECommerceCatProduct=Products category
+ECommerceCatProductDescription=Select a product category to use to identify products in Dolibarr to synchronize in e-commerce platforms.<br>Note: Module Tag/Categories must be activated.
 ECommerceCatSociete=Customers category
+ECommerceCatSocieteDescription=Select a customer category to use to identify thirparties in Doliarr to synchronize in e-commerce platforms.<br>Note: Module Tags/Categories must be activated.
 ECommerceFilterLabel=Filter label
+ECommerceFilterLabelDescription=Indicate a filter (example : store_id)
 ECommerceFilterValue=Filter value
-ECommerceSiteType=Ecommerce type
+ECommerceFilterValueDescription=Indicate a value du filtre (example : *)
+ECommerceSiteType=e-commerce type
+ECommerceSiteTypeDescription=Select a site type
 ECommerceSiteAddress=URL for Magento SOAP services
+ECommerceSiteAddressDescription=e-Commerce URL.<br>Examples: <code>http://localhost/e-commerce/</code>, <code>http://www.wordpress.example.com</code>, <code>http://www.magento.example.com</code> (Note: access through localhost may not work)
 ECommerceUserName=Username (for SOAP services)
+ECommerceUserNameDescription=Account to create in the e-commerce site.<br/> In WooCommerce, Client API Key.<br/> In Magento, Integration customer key.
 ECommerceUserPassword=API key (for SOAP services)
+ECommerceUserPasswordDescription=Password of the account to create in the e-commerce site.<br/>In WooCommerce, Key API Secret Client.<br/>In Magento, Integration customer key.
+ECommerceStockProduct=Warehouse
+ECommerceStockProductDescription=If you set the previous option of <b>%s</b> to <b>from e-commerce to Dolibarr</b>, products created or modified from the e-commerce platform will be synchronized in Dolibarr in that warehouse. <br/> <b>Warning</b>: Dolibarr's stocks are modified during product synchronization and not during the synchronization of orders or invoices.
+
 ECommerceUserPasswordRetype=Retype API key
 ECommerceConfirmDelete=Are you sure to delete this site ?
-ECommerceConfirmReset=Are you sure you want to truncate synchronization data? (Care! Any data synchronized will be dropped)
+ECommerceConfirmReset=Are you sure you want to truncate synchronization data? (Careful! Any data synchronized will be lost)
 ECommerceSetupSaved=Settings have been saved.
 ECommerceSetupErrorDb=An error occured while saving into database.
 ECommerceDeleteOk=The site has been deleted.
 ECommerceSetupPasswordNotSame=Password must be identical in the 2 fields.
 ECommerceSetupNameEmpty=Site's name is required.
-ECommerceSiteNameDescription=Example : "My Big online Shop" or "Magento Prod"
-ECommerceCatProductDescription=Select a product category to use to tags products in Dolibarr to mark them as products presents in Ecommerce too.<br>Note: Module Tag/Categories must be activated.
-ECommerceCatSocieteDescription=Select a customer category to use to tags thirparties in Doliarr to mark them as customers presents in Ecommerce too<br>Note: Module Tags/Categories must be activated.
-ECommerceFilterLabelDescription=Indicate a filter (exemple : store_id)
-ECommerceFilterValueDescription=Indicate a value du filtre (exemple : *)
-ECommerceSiteTypeDescription=Select a site type
-ECommerceSiteAddressDescription=Check before into your eCommerce admin that services are enabled.<br>Exemple : http://www.localhost.com/api/?wsdl, http://mymagentoserver/index.php/api/?wsdl
-ECommerceUserNameDescription=Exemple : soapuser
-ECommerceUserPasswordDescription=Exemple : myapikey
+
 ECommerceSite=Site
-ECommerceLastUpdate=Last Ecommerce->Dolibarr sync
-ECommerceNoUpdateSite=This site has never been synchronized
+ECommerceLastUpdate=Last update
+ECommerceNoUpdateSite=This site has never been FULLY synchronized
 ECommerceUpdateSite=Detailed update of this site
 ECommerceUpdateAll=Update all for this site
 ECommerceReset=Delete all links and Dolibarr linked record
-ECommerceResetLink=Delete all link records between Dolibarr and Ecommerce
-ECommerceMenu=ECommerce Sync
+ECommerceResetLink=Delete all link records between Dolibarr and e-commerce
+ECommerceMenu=e-commerce Sync
 ECommerceSetupCatProductEmpty=Product category is required.
 ECommerceSetupCatSocieteEmpty=Customer category is required.
 ECommerceSetupTypeEmpty=Site type is required.
@@ -68,172 +77,218 @@ ECommerceProducts=Products
 ECommerceCommande=Orders
 ECommerceFacture=Bills
 ECommerceObjectToUpdate=Items to synchronize
-ECommerceCountToUpdate=Nb of items modified in eCommerce and not yet synchronized
+ECommerceCountToUpdate=Number of items modified in e-commerce and not yet synchronized
 ECommerceSiteErrorConnect=Error connecting. Please retry.
-ECommerceSynchronizeSociete = Synchronize thirdparties
-ECommerceSynchronizeProduct = Synchronize products
-ECommerceSynchronizeCommande = Synchronize orders
-ECommerceSynchronizeFacture = Synchronize bills
+ECommerceSynchronizeSociete=Synchronize thirdparties
+ECommerceSynchronizeProduct=Synchronize products
+ECommerceSynchronizeCommande=Synchronize orders
+ECommerceSynchronizeFacture=Synchronize bills
+ECommerceSynchSocieteErrorCreateUpdateSociete=Error while synchronizing thirdparties
+ECommerceErrorGetSocieteToUpdate=A connection problem occurred while recovering thirdparties. Please try again.
+ECommerceErrorGetProductToUpdate=A connection problem occurred while recovering products. Please try again.
+ECommerceErrorGetCategoryToUpdate=A connection problem occurred while recovering categories. Please try again.
+ECommerceErrorGetCommandeToUpdate=A connection problem occurred while recovering orders. Please try again.
+ECommerceErrorGetFactureToUpdate=A connection problem occurred while recovering bills. Please try again.
+
 ECommerceReboot=Please disable this module, re-able it and then try again.
+
 ECommerceAnonymousCreateFailed=Failed to create the synchronization object corresponding to the anonymous third party.
 ECommerceNoDbAnonymous=Anonymous third party doesn't exists in database.
+
 ECommerceResetDolFactureSuccess=invoices imported have been deleted.
 ECommerceResetSynchFactureSuccess=invoices synchronization mapping data have been deleted.
-ECommerceResetDolCommandeSuccess=commands imported have been deleted.
-ECommerceResetSynchCommandeSuccess=commands synchronization mapping data have been deleted.
+ECommerceResetDolCommandeSuccess=orders imported have been deleted.
+ECommerceResetSynchCommandeSuccess=orders synchronization mapping data have been deleted.
 ECommerceResetDolProductSuccess=products imported have been deleted.
 ECommerceResetSynchProductSuccess=products synchronization mapping data have been deleted.
 ECommerceResetDolSocpeopleSuccess=contacts imported have been deleted.
 ECommerceResetSynchSocpeopleSuccess=contacts synchronization mapping data have been deleted.
-ECommerceResetDolSocieteSuccess=companies imported have been deleted.
-ECommerceResetSynchSocieteSuccess=companies synchronization mapping data have been deleted.
+ECommerceResetDolSocieteSuccess=customers imported have been deleted.
+ECommerceResetSynchSocieteSuccess=customers synchronization mapping data have been deleted.
 ECommerceResetDolCategorySuccess=categories imported have been deleted (this quantity can be higher by including categories' children).
 ECommerceResetSynchCategorySuccess=categories synchronization mapping data have been deleted (this quantity can be higher by including mappings' children).
+ECommerceSyncheCommerceCategoryUpdateError=Error while updating a category.
+ECommerceSyncheCommerceCategoryCreateError=Error while creating a category.
 ECommerceSynchronizeCategoryProduct=Synchronize product categories
 ECommerceSynchCategoryError=Error while synchronizing categories.
 ECommerceSynchCategorySuccess=categories have been synchronized.
-ECommerceSynchCategoryNoImportRoot=Categories synchronization has been aborted because dolibarr's import category doesn't exists. Please define it in synchronization configuration view before trying again
-ECommerceSynchCategoryConnectError=A connexion error occurs during categories' synchronization. Please try again.
-ECommerceSynchSocieteSuccess=companies have been synchronized.
+ECommerceSynchCategoryNoImportRoot=Categories synchronization has been aborted because dolibarr's import category doesn't exists. Please define it in synchronization configuration view before trying again.
+ECommerceSynchCategoryConnectError=A connexion error occured during categories' synchronization. Please try again.
+ECommerceSynchSocieteSuccess=customers have been synchronized.
 ECommerceSynchProductSuccess=products have been synchronized.
 ECommerceSynchCommandeSuccess=orders have been synchronized.
 ECommerceSynchFactureSuccess=bills have been synchronized.
+
 ECommerceSynchCommandeError=Error during synchronization of orders
-ECommerceCheckIfCategoryDoesNotExistsTwice=Try to make name of your categories unique on your eCommerce platform
-ECommerceSynchSocieteErrorCreateUpdateSociete=Failed to synchronize thirdparty
 
-ECommerceSyncheCommerceSocpeopleCreateError=An error occured while saving contact (company ID: %s; first name: %s; last name: %s).
-ECommerceSyncheCommerceProductCreateError=Error creating the link between Dolibarr product and eCommerce product
-ECommerceSyncheCommerceCommandeCreateError=Error creating the link between Dolibarr order and eCommerce order
-ECommerceSyncheCommerceCategoryUpdateError=Error while updating a category.
-ECommerceSyncheCommerceCategoryCreateError=Error while creating a category.
+ECommerceCheckIfCategoryDoesNotExistsTwice=Try to make name of your categories unique on your e-commerce platform
 
-ECommerceSetupSites=Setup sites ECommerce
+ECommerceSyncheCommerceSocpeopleCreateError=An error occured while saving contact (thirdparty ID: %s; first name: %s; last name: %s).
+ECommerceSyncheCommerceProductCreateError=Error creating the link between Dolibarr product and e-commerce product
+ECommerceSyncheCommerceCommandeCreateError=Error creating the link between Dolibarr order and e-commerce order
+
+ECommerceSetupSites=Setup sites e-commerce
 ECommerceTimeout=Timeout of synchronize
 ECommerceSetupTimeoutEmpty=Timeout empty
 ECommerceSetupTimeoutMustBeInt=Timeout must be int
 ECommerceTimeoutDescription=Timeout to use when doing synchronization
+
 ECommerceClickUrlToTestUrl=Click here to test URL (an XML file must appear)
 ECommerceCategoriesProducts=Product categories
-ECommerceStockProduct=Warehouse for stock initialization
-ECommerceStockProductDescription=When previous option <strong>%s</strong> is set to <strong>eCommerce to Dolibarr</strong>, this is warehouse to use for stock change/init when a product is created/modified into Dolibarr by an eCommerce synchronization. Note that stock change on Dolibarr occurs during step of synchronization of products and not during synchronization of orders/invoices.
 
-ECommerceErrorGetSocieteToUpdate=Error failed to retrieving companies list. Please retry.
-ECommerceErrorGetProduitsToUpdate=Error failed while retrieving products list. Please retry.
-ECommerceErrorGetCategoryToUpdate=Error failed while retrieving categories list. Please retry.
-ECommerceErrorGetCommandeToUpdate=Error failed while retrieving orders list. Please retry.
-ECommerceErrorGetFactureToUpdate=Error dailed while retrieving bills list. Please retry.
+
+ECommerceStockProduct=Warehouse for stock initialization
+ECommerceStockProductDescription=When previous option <strong>%s</strong> is set to <strong>e-commerce to Dolibarr</strong>, this is warehouse to use for stock change/init when a product is created/modified into Dolibarr by an e-commerce synchronization. Note that stock change on Dolibarr occurs during step of synchronization of products and not during synchronization of orders/invoices.
 
 ECommerceErrorsynchProduct=Error during synchronization of products
 
-ECommerceSynchFactureErrorSocieteNotExists=Error, the customer with remote_id = %s was not yet synchronized. Complete synchronizing of thirdparties first.
-ECommerceSynchFactureErrorCommandeNotExists=Error, the order with remote_id = %s was not yet synchronized. Complete synchronizing of orders first.
+ECommerceSynchFactureErrorSocieteNotExists=Error, the customer with remote_id=%s was not yet synchronized. Complete synchronizing of thirdparties first.
+ECommerceSynchFactureErrorCommandeNotExists=Error, the order with remote_id=%s was not yet synchronized. Complete synchronizing of orders first.
 
-WarningStockProductNotFilled=Warehouse for stock is not defined. It means you won't be able to create products into Dolibarr from eCommerce if you choose the 'Stock synchronization direction' to value 'From ecommerce to dolibarr' and if stock is not empty on eCommerce side.
+
+WarningStockProductNotFilled=Warehouse for stock is not defined. It means you won't be able to create products into Dolibarr from e-commerce if you choose the 'Stock synchronization direction' to value 'From e-commerce to Dolibarr' and if stock is not empty on e-commerce side.
 SyncCategFirst=Synchronize categories first
 SyncSocieteFirst=Synchronize thirdparties first
 SyncCommandeFirst=Synchronize orders first
-OnlyProductsIn=Only products with category <b>%s</b> or sub-categories of '<b>%s</b>' are synchronized from Dolibarr to Magento
+
 NbInDolibarr=Nb into ERP
-NbInDolibarrLinkedToE=Nb of links between ERP and eCommerce
+NbInDolibarrLinkedToE=Nb of links between ERP and e-commerce
 RefreshCount=Refresh counting
 ModuleCustomerOrderDisabled=Not supported (module Customer Order disabled)
 ECommerceLastCompleteSync=Last synchronize <strong>from %s to Dolibarr</strong> done COMPLETELY (no more elements to synchronize)
 SyncIsAutomaticInRealTime=Synchronization <strong>from Dolibarr to %s</strong> is done automatically in real time.
-WithMagentoThirdIsModifiedIfAddressModified=With Magento, a third party is also flagged as modified if one of its contact/address is modified
+WithMagentoThirdIsModifiedIfAddressModified=With Magento and WooCommerce, a third party is also flagged as modified if one of its contact/address is modified
+
+OnlyProductsIn=Only products with category <b>%s</b> or sub-categories of '<b>%s</b>' are synchronized from Dolibarr to Magento
 OnlyProductCategIn=Only sub-categories under the product category '<b>%s</b>' are synchronized from Dolibarr to Magento
 OnlyThirdPartyIn=Only thirdparties with thirdparty category '<b>%s</b>' are synchronized from Dolibarr to Magento 
-OnlyThirdPartyWithTags=Nb of thirdparties with tag '<b>%s</b>' (so that should be common with the online ecommerce shop)
+OnlyThirdPartyWithTags=Nb of thirdparties with tag '<b>%s</b>' (i.e. should be shared with the online e-commerce shop)
 WarningSoapCacheIsOn=Warning: WSDL cache is on into directory '<strong>%s</strong>'.
 WarningSoapCacheIsOn2=Changing <strong>%s</strong> or its content may not be seen by PHP.
 SoapCacheIsOff=Your PHP WSDL cache is off.
-SetupOfWarehouseNotDefinedForThisSite=A new or modified product were found on eCommerce shop with a different stock level than into Dolibarr. To be able to create/update them in Dolibarr, you must setup the warehouse to initialize.
+SetupOfWarehouseNotDefinedForThisSite=A new or modified product were found on e-commerce shop with a different stock level than into Dolibarr. To be able to create/update them in Dolibarr, you must setup the warehouse to initialize.
 ECommerceStockSyncDirection=Stock synchronisation direction
-ECommerceStockSyncDirectionDescription=Define if you want to see stock decrease in Dolibarr when stock decrease on Magento (rare), or overwrite Magento stock when stock in Dolibarr is modified (common choice)
+ECommerceStockSyncDirectionDescription=Define if you want to see stock decrease in Dolibarr when stock decrease on e-commerce (rare), or overwrite e-commerce stock when stock in Dolibarr is modified (common choice)
 MainSyncSetup=Main synchronization setup
 StockSyncSetup=Stock synchronization setup
 ErrorModuleSoapRequired=Error: PHP module SOAP is required to have this module working.
 SyncAll=Synchronize All
 DangerZone=Danger Zone
-AreYouSureYouWantToDeleteLinks=Are you sure you want to delete mapping links between Dolibarr and eCommerce objects ?
-AreYouSureYouWantToDeleteAll=Are you sure you want to delete mapping links between Dolibarr and eCommerce objects but also objects found in Dolibarr ?
-BackToListOfSites=Back to list of ecommerce sites
+
+AreYouSureYouWantToDeleteLinks=Are you sure you want to delete mapping links between Dolibarr and e-commerce objects?
+AreYouSureYouWantToDeleteAll=Are you sure you want to delete mapping links between Dolibarr and e-commerce objects but also objects found in Dolibarr?
+BackToListOfSites=Back to list of sites
 ClearLinks=Delete links
 ClearData=Delete links and Dolibarr linked records
 ShowDebugTools=Show init/purge/debug tools
+
 ECommerceShipping=Shipping
 ECommercePriceLevel=Price level
-ECommercePriceLevelDescription=Only this price level are synchronized between Dolibarr and eCommerce
-ECommerceConfirmUpdatePriceLevel=You have changed the price level and the products on the eCommerce will be updated.\nThis may take a long time, please confirm.
-SeeECommerceConfFileIfKo=See content of file <strong>%s</strong>, on your eCommerce server, if this URL does not work.
-RestrictCountAndSynchForRecordBefore=Restrict count and synchronize for record with a last modification date in eCommerce before
-RestrictNbInSync=Restrict number of record of same object to synchronize in same request
+ECommercePriceLevelDescription=Only this price level are synchronized between Dolibarr and e-commerce
+ECommerceConfirmUpdatePriceLevel=You have changed the price level and the products on the e-commerce will be updated.\nThis may take a long time, please confirm.
+SeeECommerceConfFileIfKo=See content of file <strong>%s</strong>, on your e-commerce server, if this URL does not work.
+RestrictCountAndSynchForRecordBefore=Restrict count and synchronize for record with a last modification date in e-commerce before
+RestrictNbInSync=Restrict number of record of same object type to synchronize in same request
 SynchUnkownCustomersOnThirdParty=Use the following thirdparty for orders done on unknown customers (non logged customers)
 ThirdPartyForNonLoggedUsers=Third party for anonymous/non logged users
+BankAccountForPayments=Bank account for invoice payments
+SynchPaymentsOnWichBankAccount=Bank account to use for payments when creating a paid invoice from Magento
+
 
 ## OAuth Setup ##
-ECommerceOAuthWordpressSetup=Connexion OAuth2 sur WordPress ( Allez sur <a class="notasortlink" href="%s" target="_blank">cette page</a> , puis "Ajouter un nouveau client" pour créer les informations d'identification OAuth2 )
-ECommerceSiteOAuthRedirectUri=Url de redirection
-ECommerceSiteOAuthRedirectUriDescription=Utilisez l'URL suivante comme URI de redirection (Callback) quand vous créez une nouvelle application (ou un nouveau client)
+ECommerceOAuthWordpressSetup=OAuth2 connection to WordPress (Go to <a class="notasortlink" href="%s" target="_blank">this page</a>, then "Add a new client" to create OAuth2 credentials)
+ECommerceSiteOAuthRedirectUri=Redirect Url
+ECommerceSiteOAuthRedirectUriDescription=Use the following URL as a Callback URI when you create a new application (or a new client)
 ECommerceSiteOAuthId=OAuth ID
-ECommerceSiteOAuthIdDescription=Id de connexion au service OAuth
+ECommerceSiteOAuthIdDescription=OAuth service login ID
 ECommerceSiteOAuthSecret=OAuth secret
-ECommerceSiteOAuthSecretDescription=Secret de connexion au service OAuth
-ECommerceOAuthCheckToken=Allez sur <a class="notasortlink" href="%s" target="_blank">cette page</a> pour vérifier/effacer les autorisations sauvées par le fournisseur OAuth2.
+ECommerceSiteOAuthSecretDescription=OAuth service connection secret
+ECommerceOAuthCheckToken=Go to <a class="notasortlink" href="%s" target="_blank">this page</a> to check/clear the permissions saved by the OAuth2 provider.
+
+ECommerceOrderStatusSetup=Order Status Synchronization
+ECommerceOrderStatusSetupDescription=Choose the corresponding status during synchronization.
+ECommerceOrderStatusDtoECheckLvlStatus=Only change the status if the level is higher than the previous status
+ECommerceOrderStatusDtoECheckLvlStatusDescription=The status level is set in the values ​​of the additional attribute of the status of the order (Index in the form: status_state,label). ex: 0_on-hold,On hold
 
 ECommerceSynchronizeProductImages=Synchronize images
 ECommerceProductImagesSynchronized=Images synchronized.
 
-ECommerceRemoteAccessConnect=Erreur de connection au site '%s': %s
-ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrCommande=Erreur de recuperation des commandes sur le site '%s': %s
-ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrProduct=Erreur de recuperation des produits sur le site '%s': %s
-ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrProductVariations=Erreur de recuperation des variations du produit distant 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrSociete=Erreur de recuperation des sociétés sur le site '%s': %s
-ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrSocpeople=Erreur de recuperation des sociétés (pour les contacts/adresses) sur le site '%s': %s
-ECommerceRemoteAccessCreateRemoteProduct=Erreur de creation du produit 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessCreateRemoteProductLink=Erreur de creation du lien pour le produit 'id:%s' pour le site '%s': %s
-ECommerceRemoteAccessGetCategoryData=Erreur de récupération des données de la catégorie distante 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessGetCommandeToUpdate=Erreur de récupération de la liste des commandes à mettre à jour sur le site '%s': %s
-ECommerceRemoteAccessGetProductToUpdate=Erreur de récupération de la liste des produits à mettre à jour sur le site '%s': %s
-ECommerceRemoteAccessGetRemoteCategoryTree=Erreur de récupération de la liste des catégories à mettre à jour sur le site '%s': %s
-ECommerceRemoteAccessGetSocieteToUpdate=Erreur de récupération de la liste des sociétés à mettre à jour sur le site '%s': %s
-ECommerceRemoteAccessSendFileForCommande=Erreur pour lier le fichier avec la commande distante 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessSendFileForCommandeInWordpress=Erreur de l'envoi du fichier pour la commande distante 'id:%s' dans les média de Wordpress sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteCommande=Erreur de mise à jour de la commande distante 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteProduct=Erreur de mise à jour du produit distant 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteProductGetRemoteProduct=Erreur de récupération du produit distant 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteProductSendImage=Erreur de l'envoi d'une image pour le produit distante 'id:%s' dans les média de Wordpress sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteProductVariation=Erreur de mise à jour de la variation 'id:%s' du produit distant 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteSociete=Erreur de mise à jour de la société distante 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteSocpeople=Erreur de mise à jour des contacts/adresses de la société distante 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteStockProduct=Erreur de mise à jour des stocks de la variation 'id:%s' du produit distant 'id:%s' sur le site '%s': %s
-ECommerceRemoteAccessUpdateRemoteStockProductVariation=Erreur de mise à jour des stocks du produit distant 'id:%s' sur le site '%s': %s
+ECommerceRemoteAccessConnect=Site connection error '%s':%s
+ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrCommande=Error recovering orders from site '%s':%s
+ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrProduct=Error recovering products from site '%s':%s
+ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrProductVariations=Error retrieving variations of remote product 'id:%s' from site '%s':%s
+ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrSociete=Error recovering thirdparties from site '%s':%s
+ECommerceRemoteAccessConvertRemoteObjectIntoDolibarrSocpeople=Thirdparty recovery error (for contacts / addresses) from site '%s':%s
+ECommerceRemoteAccessCreateRemoteProduct=Error creating product 'id:%s' on site '%s':%s
+ECommerceRemoteAccessCreateRemoteProductLink=Error creating link for product 'id:%s' on site '%s':%s
+ECommerceRemoteAccessGetCategoryData=Error retrieving data from remote category 'id:%s' on site '%s':%s
+ECommerceRemoteAccessGetCommandeToUpdate=Error retrieving list of orders to update on site '%s':%s
+ECommerceRemoteAccessGetProductToUpdate=Error retrieving list of products to update on site '%s':%s
+ECommerceRemoteAccessGetRemoteCategoryTree=Error retrieving list of categories to update on site '%s':%s
+ECommerceRemoteAccessGetSocieteToUpdate=Error retrieving list of thirdparties to update on site '%s':%s
+ECommerceRemoteAccessSendFileForCommande=Error linking file with remote order 'id:%s' on site '%s':%s
+ECommerceRemoteAccessSendFileForCommandeInWordpress=Error sending file for remote order 'id:%s' in Wordpress media on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteCommande=Error updating remote order 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteProduct=Error updating remote product 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteProductGetRemoteProduct=Remote product recovery error 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteProductSendImage=Error sending an image for remote product 'id:%s' in Wordpress media on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteProductVariation=Error updating the 'id:%s' variation of the remote product 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteSociete=Error updating the remote thirdparty 'id:%s' on the site '%s':%s
+ECommerceRemoteAccessUpdateRemoteSocpeople=Error updating contacts/addresses of remote thirdparty 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteStockProduct=Error updating inventory of variation 'id:%s' of remote product 'id:%s' on site '%s':%s
+ECommerceRemoteAccessUpdateRemoteStockProductVariation=Remote product inventory update error 'id:%s' on site '%s':%s
 
-ECommerceSyncheCommerceProductDownloadImageError=Erreur de récupération de l'image (%s) pour le produit 'id:%s' du produit distant 'id:%s' sur le site '%s'
+ECommerceSyncheCommerceProductDownloadImageError=Image recovery error (%s) for product 'id:%s' of remote product 'id:%s' from site '%s'
 
-ECommerceNoDescForProductLine=L'api n'a pas pu récupérer la description du produit
+ECommerceNoDescForProductLine=The API could not retrieve the product description
 
-ECommerceUpdateRemoteCompanyLink=Erreur de mise à jour du lien de la société 'id:%s' sur le site '%s': %s
-ECommerceUpdateRemoteSocpeopleLink=Erreur de mise à jour du lien du contact 'id:%s' sur le site '%s': %s
-ECommerceUpdateRemoteProductLink=Erreur de mise à jour du lien du produit 'id:%s' sur le site '%s': %s
-ECommerceCreateRemoteProductLink=Erreur de la création du lien du produit 'id:%s' sur le site '%s': %s
-ECommerceUpdateRemoteOrderLink=Erreur de mise à jour du lien de la commande 'id:%s' sur le site '%s': %s
-ECommerceUpdateRemoteInvoiceLink=Erreur de mise à jour du lien de la facture 'id:%s' sur le site '%s': %s
+ECommerceUpdateRemoteCompanyLink=Error updating thirdparty link 'id:%s' on site '%s':%s
+ECommerceUpdateRemoteSocpeopleLink=Error updating contact link 'id:%s' on site '%s':%s
+ECommerceUpdateRemoteProductLink=Error updating product link 'id:%s' on site '%s':%s
+ECommerceCreateRemoteProductLink=Error creating product link 'id:%s' on site '%s':%s
+ECommerceUpdateRemoteOrderLink=Error updating order link 'id:%s' on site '%s':%s
+ECommerceUpdateRemoteInvoiceLink=Error updating invoice link 'id:%s' on site '%s':%s
 
-ECommerceRealTimeSynchroDolibarrToECommerceSetup            = Synchronisation en temps reel de Dolibarr vers Ecommerce
-ECommerceThirdParty                                         = Tiers
-ECommerceContact                                            = Contacts
-ECommerceProduct                                            = Produits
-ECommerceOrder                                              = Commandes
-ECommerceRealTimeSynchroDolibarrToECommerceSetupDescription = Synchronisation de l'élément dans le site ECommerce à la modification de celui lié dans Dolibarr
+ECommerceRealTimeSynchroDolibarrToECommerceSetup=Real Time Synchronization from Dolibarr to e-commerce
+ECommerceThirdParty=Third Party
+ECommerceContact=Contacts
+ECommerceProduct=Products
+ECommerceOrder=Orders
+ECommerceRealTimeSynchroDolibarrToECommerceSetupDescription=Synchronization of the item in the e-commerce site to modification of the linked one in Dolibarr
 
-ECommercePaymentCondition            = Conditions de règlement
-ECommercePaymentConditionDescription = Conditions de règlement par défault lors de la récupération de la commande depuis le site ECommerce
+ECommercePaymentCondition=Terms of Payment
+ECommercePaymentConditionDescription=Default payment terms when picking up the order from the e-commerce site
 
-ECommerceCountToUpdateDtoE  = Nombre d'éléments à synchroniser (crée côté Dolibarr et non lié à ECommerce)
-SyncProductFirst            = Synchroniser d'abord les produits
+ECommerceCountToUpdateDtoE=Number of items to be synchronized (created on Dolibarr side and not linked to e-commerce)
+SyncProductFirst=Synchronize products first
 
-ECommerceCreateRemoteCategoryLink   = Erreur de la création du lien de la catégorie 'id:%s' sur le site '%s': %s
+ECommerceCreateRemoteCategoryLink=Error creating link from 'id:%s' on site '%s':%s
 
-ECommerceSyncheCommerceMotherCategoryCreateError=Erreur de création du lien de la catégorie racine pour la catégorie distante '%s' 'id:%s' sur le site '%s'.
-ECommerceNGUpdateElementDateMoreRecent=Inclus aussi les éléments dont la date de mise à jour est plus récente que celle de synchronisation
+ECommerceSyncheCommerceMotherCategoryCreateError=Error creating the root category link for remote category '%s' 'id:%s' on site '%s'.
+ECommerceNGUpdateElementDateMoreRecent=Also includes items whose update date is more recent than the synchronization date
+ProductsSyncSetup=Product synchronization
+AllDirection=In both directions
+ECommerceProductImageSyncDirection=Image Sync
+ECommerceProductImageSyncDirectionDescription=This parameter determines the direction of image update
+ECommerceProductRefSyncDirection=Reference synchronization
+ECommerceProductRefSyncDirectionDescription=This parameter determines the direction of update of the reference
+ECommerceProductDescriptionSyncDirection=Synchronization of Description
+ECommerceProductDescriptionSyncDirectionDescription=This parameter determines the update direction of the description
+ECommerceProductShortDescriptionSyncDirection=Synchronization of the short description
+ECommerceProductShortDescriptionSyncDirectionDescription=This parameter determines the update direction of the short description
+ECommerceProductWeightSyncDirection=Product Weight Synchronization
+ECommerceProductWeightSyncDirectionDescription=This parameter determines the direction of product weight update
+ECommerceProductTaxSyncDirection=Tax Class Synchronization on store
+ECommerceProductTaxSyncDirectionDescription=This parameter determines how to update the tax class on the store
+ECommerceProductStatusSyncDirection=Sync status on the store
+ECommerceProductStatusSyncDirectionDescription=This parameter determines the direction of status update on the store
+
+ECommerceExportProductsPrices=Export Product Prices (WooSync)
+ECommerceImportProductsPrices=Product Price Import (WooSync) (Does not support adding new products, only update is supported by CSV)
+
+eCommerceNGUnlinkToECommerce=Remove product from e-commerce website
+eCommerceNGConfirmUnlinkToECommerce=Are you sure you want to remove this product from e-commerce?
+ECommerceResetCategoriesProductSuccess=products categories on site have been successfully removed.
+
+ECommerceSynchProductError=Error while synchronizing the remote product:
+ECommerceErrorProductAlreadyLinkedWithRemoteProduct=The product with this ref. is already bound to the remote product ID: %s.

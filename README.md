@@ -1,17 +1,18 @@
-# WooSync, synchronize Woocommerce and Dolibarr
+# e-Commerce Extended - Synchronize your e-commerce solutions with Dolibarr
 
-## You have to rename the folder to ecommerceng when you download the zip file or make a git clone. In other case the module will not work
+## English
+eCommerceExt is a fork based on [OpenDSI WooSync](https://github.com/OPEN-DSI/ecommerceng_woosync) and [TECLib eCommerceNG](https://github.com/TECLIB/dolibarr) with the objective to provide one module for syncrhonizing both WooCommerce and Magento with Dolibarr.
 
-Use it at you onwn risk Open-DSI does not provide support for the use, installation or bug fixing for this software. For this you have to acquire a time credit on our online shop. https://www.open-dsi.fr/boutique/ You can also consult our company for any installation, configuration or development services. 
+Use it at you onwn risk.
+You can also consult us for any installation, configuration or development service.
 
-Before any use, please refer to the wiki to check the available functionnality
-https://wiki.dolibarr.org/index.php/Module_woocommerce_EN
-and read the document in
-htdocs/ecommerceng/doc/
+**Before any use, please read the documentation in [doc](https://github.com/Monogramm/dolibarr-ecommerceext/tree/master/doc).**
 
-Utilisation à vos risques et périls. Open-DSI ne fournit pas de support à l’utilisation, à l'installation ni de correction de bugs pour ce logiciel. Pour cela vous devrez faire l’acquisition d’un crédit temps sur notre boutique en ligne. https://www.open-dsi.fr/boutique/ Vous pouvez également nous consulter pour toute prestation d’installation, configuration ou développement. 
+## Français
 
-Avant toute utilisation, merci de prendre connaissance du wiki pour vérifier si le module répond en l'état à vos besoins
-https://wiki.dolibarr.org/index.php/Module_woocommerce_EN
-et lire la documentaion disponible dans
-htdocs/ecommerceng/doc/
+eCommerceExt est un fork basé sur [WooSync par OpenDSI](https://github.com/OPEN-DSI/ecommerceng_woosync) et [eCommerceNG par TECLib](https://github.com/TECLIB/dolibarr) avec pour objectif de fournir un module pour la synchronisation de WooCommerce et Magento avec Dolibarr.
+
+Utilisation à vos risques et périls.
+Vous pouvez également nous consulter pour toute prestation d’installation, configuration ou développement. 
+
+**Avant toute utilisation, merci de lire la documentaion disponible dans [doc](https://github.com/Monogramm/dolibarr-ecommerceext/tree/master/doc) (anglais uniquement).**
