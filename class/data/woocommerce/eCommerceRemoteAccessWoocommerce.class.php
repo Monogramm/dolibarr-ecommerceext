@@ -1274,7 +1274,7 @@ class eCommerceRemoteAccessWoocommerce
                     'label' => $category->name,
                     'name' => $category->name,
                     'description' => $category->description,
-                    'updated_at' => '',
+                    'updated_at' => null,
                 ];
             }
         }
@@ -1349,7 +1349,7 @@ class eCommerceRemoteAccessWoocommerce
                 'label' => $result->name,
                 'name' => $result->name,
                 'description' => $result->description,
-                'updated_at' => '',
+                'updated_at' => null,
             ];
         }
 

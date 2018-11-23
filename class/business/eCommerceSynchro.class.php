@@ -908,7 +908,7 @@ class eCommerceSynchro
                                 $this->eCommerceMotherCategory->fk_category = $dBCategorie->id;
                                 $this->eCommerceMotherCategory->fk_site = $this->eCommerceSite->id;
                                 $this->eCommerceMotherCategory->remote_id = $parentremoteid;
-                                $this->eCommerceMotherCategory->last_update = strtotime($categoryArray['updated_at']);
+                                if (!empty($categoryArray['updated_at'])) $this->eCommerceMotherCategory->last_update = strtotime($categoryArray['updated_at']);
 
                                 // reset $dBCategorie
                                 $dBCategorie = new Categorie($this->db);
@@ -1049,7 +1049,7 @@ class eCommerceSynchro
                                 $this->eCommerceCategory->fk_site = $this->eCommerceSite->id;
                                 $this->eCommerceCategory->remote_id = $categoryArray['category_id'];
                                 $this->eCommerceCategory->remote_parent_id = $categoryArray['parent_id'];
-                                $this->eCommerceCategory->last_update = strtotime($categoryArray['updated_at']);
+                                if (!empty($categoryArray['updated_at'])) $this->eCommerceCategory->last_update = strtotime($categoryArray['updated_at']);
 
                                 if ($this->eCommerceCategory->create($this->user) < 0)  // insert into table lxx_ecommerce_category
                                 {
@@ -1321,8 +1321,8 @@ class eCommerceSynchro
                         $cat->fetch($this->eCommerceSite->fk_cat_societe);
                         $cat->add_type($dBSociete, 'customer');
 
-                        dol_syslog("synchSociete Now we will update link rowid=".$this->eCommerceSociete->id." with last_update = ".$societeArray['last_update']);
-                        $this->eCommerceSociete->last_update = $societeArray['last_update'];
+                        dol_syslog("synchSociete Now we will update link rowid=".$this->eCommerceSociete->id." with last_update = ".$societeArray['date_modified']);
+                        $this->eCommerceSociete->last_update = $societeArray['date_modified'];
                         $this->eCommerceSociete->fk_societe = $dBSociete->id;
                         //if a previous synchro exists
                         if ($synchExists > 0 && !isset($this->error))
