@@ -350,7 +350,7 @@ if ($_POST['site_form_detail_action'] == 'save')
                         'unique' => 0,
                         'required' => 0,
                         'default_value' => '',
-                        'param' => array('options' => array("c_ecommerceext_tax_class:label:code::active=1 AND site_id={$siteDb->id} AND entity={$conf->entity}" => null)),
+                        'param' => array('options' => array("c_ecommerce_tax_class:label:code::active=1 AND site_id={$siteDb->id} AND entity={$conf->entity}" => null)),
                         'alwayseditable' => 1,
                         'perms' => '',
                         'list' => 1,

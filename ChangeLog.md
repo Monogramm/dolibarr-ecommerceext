@@ -1,5 +1,13 @@
 # ChangeLog
 
+## 4.1.2.0
+
+* Correction de la récupération des classes de TVA
+
+## 4.1.1.0
+
+* Correction de la synchronisation des catégories
+
 ## 4.1.0.0
 
 * Suppressions des appels à l'API WooCommerce Legacy
