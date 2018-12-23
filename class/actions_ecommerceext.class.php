@@ -139,12 +139,12 @@ class ActionsECommerceExt
                         $formquestionclone = array(
                             array('type' => 'select', 'name' => 'siteid', 'label' => $langs->trans("ECommerceSite"), 'values' => $sites_array),
                         );
-                        print $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('EcommerceNGUnlinkToECommerce'), $langs->trans('EcommerceNGConfirmUnlinkToECommerce', $object->ref), 'confirm_unlink_product_to_ecommerce', $formquestionclone, 'yes', 1, 250, 600);
+                        print $form->formconfirm($_SERVER["PHP_SELF"] . '?id=' . $object->id, $langs->trans('ECommerceUnlinkToECommerce'), $langs->trans('ECommerceNGConfirmUnlinkToECommerce', $object->ref), 'confirm_unlink_product_to_ecommerce', $formquestionclone, 'yes', 1, 250, 600);
                     }
 
                     $site_ids = array_keys($sites);
                     $params = count($sites) > 1 ? '&action=unlink_product_to_ecommerce' : '&action=confirm_unlink_product_to_ecommerce&confirm=yes&siteid=' . $site_ids[0];
-                    print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . $params . '">' . $langs->trans("EcommerceNGUnlinkToECommerce") . '</a></div>';
+                    print '<div class="inline-block divButAction"><a class="butAction" href="' . $_SERVER["PHP_SELF"] . '?id=' . $object->id . $params . '">' . $langs->trans("ECommerceUnlinkToECommerce") . '</a></div>';
                 }
             }
         }

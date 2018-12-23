@@ -47,7 +47,7 @@ ECommerceUserNameDescription=Compte à créer dans le site e-commerce.<br/>Dans 
 ECommerceUserPassword=Mot de passe - API key
 ECommerceUserPasswordDescription=Mot de passe du compte à créer dans le site e-commerce.<br/>Dans WooCommerce, Clé API Secret Client.<br/>Dans Magento, secret du client d'integration.
 ECommerceStockProduct=Entrepôt
-ECommerceStockProductDescription=Si vous définissez l'option précédente de <b>%s</b> à <b>e-commerce vers Dolibarr</b>, les produits créés ou modifiés depuis la plateforme e-commerce seront synchronisés dans Dolibarr dans cet entrepôt. <br/><b>Attention</b> : Les stocks de Dolibarr sont modifiés lors de la synchronisation des produits et non pas pendant la synchronisation de commandes ou des factures.
+ECommerceStockProductDescription=Si vous définissez l'option précédente de <strong>%s</strong> à <strong>e-commerce vers Dolibarr</strong>, les produits créés ou modifiés depuis la plateforme e-commerce seront synchronisés dans Dolibarr dans cet entrepôt. <br/><strong>Attention</strong> : Les stocks de Dolibarr sont modifiés lors de la synchronisation des produits et non pas pendant la synchronisation de commandes ou des factures.
 
 ECommerceUserPasswordRetype=Retapez le mot de passe - API key
 ECommerceConfirmDelete=Êtes vous sûre de vouloir supprimer ce site ?
@@ -155,14 +155,14 @@ NbInDolibarr=Nb dans l'ERP
 NbInDolibarrLinkedToE=Nb dans l'ERP liés à la boutique
 RefreshCount=Rafraîchir le comptage
 ModuleCustomerOrderDisabled=Non géré (module Commande Client désactivé)
-ECommerceLastCompleteSync=Date de la dernière synchronisation <b>de %s vers Dolibarr</b> réalisée ENTIÈREMENT (Entièrement=plus aucun élément à synchroniser)
-SyncIsAutomaticInRealTime=La synchronisation <b>De Dolibarr vers %s</b> est effectuée en temps réel.
+ECommerceLastCompleteSync=Date de la dernière synchronisation <strong>de %s vers Dolibarr</strong> réalisée ENTIÈREMENT (Entièrement=plus aucun élément à synchroniser)
+SyncIsAutomaticInRealTime=La synchronisation <strong>De Dolibarr vers %s</strong> est effectuée en temps réel.
 WithMagentoThirdIsModifiedIfAddressModified=Avec Magento et WooCommerce, un tiers sera aussi considéré comme modifié si un de ses contacts/adresses a été modifié.
 
-OnlyProductsIn=Seuls les produits de la catégorie <b>%s</b> et de ses sous-catégories sont synchronisées de Dolibarr vers Magento ou WooCommerce.
-OnlyProductCategIn=Seule la catégorie <b>%s</b> et ses sous-catégories sont synchronisée de Dolibarr vers Magento ou WooCommerce.
-OnlyThirdPartyIn=Seuls les tiers de la catégorie <b>%s</b> et de ses sous-catégories sont synchronisées de Dolibarr vers Magento ou WooCommerce.
-OnlyThirdPartyWithTags=Nb de tiers rattachés à la catégorie <b>%s</b> (donc sensé être commun avec la boutique en ligne)
+OnlyProductsIn=Seuls les produits de la catégorie <strong>%s</strong> et de ses sous-catégories sont synchronisées de Dolibarr vers Magento ou WooCommerce.
+OnlyProductCategIn=Seule la catégorie <strong>%s</strong> et ses sous-catégories sont synchronisée de Dolibarr vers Magento ou WooCommerce.
+OnlyThirdPartyIn=Seuls les tiers de la catégorie <strong>%s</strong> et de ses sous-catégories sont synchronisées de Dolibarr vers Magento ou WooCommerce.
+OnlyThirdPartyWithTags=Nb de tiers rattachés à la catégorie <strong>%s</strong> (donc sensé être commun avec la boutique en ligne)
 WarningSoapCacheIsOn=Attention : le cache WSDL est activé dans le répertoire <strong>%s</strong>.
 WarningSoapCacheIsOn2=Changer <strong>%s</strong> ou son contenu peut ne pas être vu par le PHP.
 SoapCacheIsOff=Votre cache PHP WSDL est inactif.
@@ -287,8 +287,8 @@ ECommerceProductStatusSyncDirectionDescription=Ce paramètre détermine le sens 
 ECommerceExportProductsPrices=Export des prix des produits (WooSync)
 ECommerceImportProductsPrices=Import des prix des produits (WooSync) (Ne support pas l'ajout de nouveaux produits, seule la mise à jour est supportée par CSV)
 
-eCommerceNGUnlinkToECommerce=Enlever le produit du site e-commerce
-eCommerceNGConfirmUnlinkToECommerce=Êtes-vous sûr de vouloir enlever ce produit du site e-commerce ?
+ECommerceUnlinkToECommerce=Enlever le produit du site e-commerce
+ECommerceNGConfirmUnlinkToECommerce=Êtes-vous sûr de vouloir enlever ce produit du site e-commerce ?
 ECommerceResetCategoriesProductSuccess=catégories du site sur les produits ont bien été retirées.
 
 ECommerceSynchProductError=Erreur lors de la synchronisation du produit distant:

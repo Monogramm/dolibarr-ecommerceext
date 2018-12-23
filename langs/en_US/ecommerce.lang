@@ -47,7 +47,7 @@ ECommerceUserNameDescription=Account to create in the e-commerce site.<br/> In W
 ECommerceUserPassword=API key (for SOAP services)
 ECommerceUserPasswordDescription=Password of the account to create in the e-commerce site.<br/>In WooCommerce, Key API Secret Client.<br/>In Magento, Integration customer key.
 ECommerceStockProduct=Warehouse
-ECommerceStockProductDescription=If you set the previous option of <b>%s</b> to <b>from e-commerce to Dolibarr</b>, products created or modified from the e-commerce platform will be synchronized in Dolibarr in that warehouse. <br/> <b>Warning</b>: Dolibarr's stocks are modified during product synchronization and not during the synchronization of orders or invoices.
+ECommerceStockProductDescription=If you set the previous option of <strong>%s</strong> to <strong>from e-commerce to Dolibarr</strong>, products created or modified from the e-commerce platform will be synchronized in Dolibarr in that warehouse. <br/> <strong>Warning</strong>: Dolibarr's stocks are modified during product synchronization and not during the synchronization of orders or invoices.
 
 ECommerceUserPasswordRetype=Retype API key
 ECommerceConfirmDelete=Are you sure to delete this site ?
@@ -159,10 +159,10 @@ ECommerceLastCompleteSync=Last synchronize <strong>from %s to Dolibarr</strong> 
 SyncIsAutomaticInRealTime=Synchronization <strong>from Dolibarr to %s</strong> is done automatically in real time.
 WithMagentoThirdIsModifiedIfAddressModified=With Magento and WooCommerce, a third party is also flagged as modified if one of its contact/address is modified
 
-OnlyProductsIn=Only products with category <b>%s</b> or sub-categories of '<b>%s</b>' are synchronized from Dolibarr to Magento
-OnlyProductCategIn=Only sub-categories under the product category '<b>%s</b>' are synchronized from Dolibarr to Magento
-OnlyThirdPartyIn=Only thirdparties with thirdparty category '<b>%s</b>' are synchronized from Dolibarr to Magento 
-OnlyThirdPartyWithTags=Nb of thirdparties with tag '<b>%s</b>' (i.e. should be shared with the online e-commerce shop)
+OnlyProductsIn=Only products with category <strong>%s</strong> or sub-categories of '<strong>%s</strong>' are synchronized from Dolibarr to Magento
+OnlyProductCategIn=Only sub-categories under the product category '<strong>%s</strong>' are synchronized from Dolibarr to Magento
+OnlyThirdPartyIn=Only thirdparties with thirdparty category '<strong>%s</strong>' are synchronized from Dolibarr to Magento 
+OnlyThirdPartyWithTags=Nb of thirdparties with tag '<strong>%s</strong>' (i.e. should be shared with the online e-commerce shop)
 WarningSoapCacheIsOn=Warning: WSDL cache is on into directory '<strong>%s</strong>'.
 WarningSoapCacheIsOn2=Changing <strong>%s</strong> or its content may not be seen by PHP.
 SoapCacheIsOff=Your PHP WSDL cache is off.
@@ -286,8 +286,8 @@ ECommerceProductStatusSyncDirectionDescription=This parameter determines the dir
 ECommerceExportProductsPrices=Export Product Prices (WooSync)
 ECommerceImportProductsPrices=Product Price Import (WooSync) (Does not support adding new products, only update is supported by CSV)
 
-eCommerceNGUnlinkToECommerce=Remove product from e-commerce website
-eCommerceNGConfirmUnlinkToECommerce=Are you sure you want to remove this product from e-commerce?
+ECommerceUnlinkToECommerce=Remove product from e-commerce website
+ECommerceNGConfirmUnlinkToECommerce=Are you sure you want to remove this product from e-commerce?
 ECommerceResetCategoriesProductSuccess=products categories on site have been successfully removed.
 
 ECommerceSynchProductError=Error while synchronizing the remote product:
