@@ -55,7 +55,7 @@ class modECommerceExt extends DolibarrModules
 		// Module label (no space allowed), used if translation string 'ModuleXXXName' not found (where XXX is value of numeric property 'numero' of module)
 		$this->name = preg_replace('/^mod/i','',get_class($this));        //  Must be same than value used for if $conf->ecommerceext->enabled
 		// Module description, used if translation string 'ModuleXXXDesc' not found (where XXX is value of numeric property 'numero' of module)
-		$this->description = "Module to synchronise Dolibarr with ECommerce platform (currently ecommerce supported: WooCommerce)";
+		$this->description = "Module to synchronize Dolibarr with ECommerce platform (currently ecommerce supported: WooCommerce)";
 		$this->descriptionlong = "See page https://github.com/Monogramm/dolibarr-ecommerceext for more information";
 		$this->editor_name = 'Monogramm';
 		$this->editor_url = 'http://www.monogramm.io';
