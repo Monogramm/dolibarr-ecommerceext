@@ -107,8 +107,8 @@ ECommerceResetDolSocieteSuccess=tiers clients importés ont bien été supprimé
 ECommerceResetSynchSocieteSuccess=références de synchronisation de tiers clients ont bien été supprimées.
 ECommerceResetDolCategorySuccess=catégories importées ont bien été supprimées (ce nombre peut-être supérieur à celui indiqué en incluant les enfants des catégories supprimées).
 ECommerceResetSynchCategorySuccess=références de synchronisation de catégories ont bien été supprimées (ce nombre peut-être supérieur à celui indiqué en incluant les enfants des références supprimées).
-ECommerceSyncheCommerceCategoryUpdateError=Erreur dans la mise à jour d'une catégorie.
-ECommerceSyncheCommerceCategoryCreateError=Erreur lors de la création d'une catégorie.
+ECommerceSynchCategoryUpdateError=Erreur dans la mise à jour d'une catégorie.
+ECommerceSynchCategoryCreateError=Erreur lors de la création d'une catégorie.
 ECommerceSynchronizeCategoryProduct=Synchroniser les catégories de produits
 ECommerceSynchCategoryError=Erreur lors de la synchronisation des catégories.
 ECommerceSynchCategorySuccess=catégories ont bien été synchronisées.
@@ -123,9 +123,10 @@ ECommerceSynchCommandeError=Erreur durant la synchronisation des commandes
 
 ECommerceCheckIfCategoryDoesNotExistsTwice=Essayez de rendre unique le nom de vos catégories sur votre plate-forme e-commerce
 
-ECommerceSyncheCommerceSocpeopleCreateError=Une erreur est survenue lors de l'enregistrement du contact (ID tiers: %s; prénom: %s; nom de famille: %s).
-ECommerceSyncheCommerceProductCreateError=Erreur lors de la création du lien entre le produit Dolibarr et le produit e-commerce
-ECommerceSyncheCommerceCommandeCreateError=Erreur lors de la création du lien entre la commande Dolibarr et la commande e-commerce
+ECommerceSynchSocpeopleCreateError=Une erreur est survenue lors de l'enregistrement du contact (ID tiers: %s; prénom: %s; nom de famille: %s).
+ECommerceSynchProductCreateError=Erreur lors de la création du lien entre le produit Dolibarr et le produit e-commerce
+ECommerceSynchProductUpdateError=Erreur lors de la mise à jour du lien entre le produit Dolibarr et le produit e-commerce
+ECommerceSynchCommandeCreateError=Erreur lors de la création du lien entre la commande Dolibarr et la commande e-commerce
 
 ECommerceSetupSites=Configuration des sites
 ECommerceTimeout=Timeout des accès APIs
@@ -239,7 +240,7 @@ ECommerceRemoteAccessUpdateRemoteSocpeople=Erreur de mise à jour des contacts/a
 ECommerceRemoteAccessUpdateRemoteStockProduct=Erreur de mise à jour des stocks de la variation 'id:%s' du produit distant 'id:%s' sur le site '%s': %s
 ECommerceRemoteAccessUpdateRemoteStockProductVariation=Erreur de mise à jour des stocks du produit distant 'id:%s' sur le site '%s': %s
 
-ECommerceSyncheCommerceProductDownloadImageError=Erreur de récupération de l'image (%s) pour le produit 'id:%s' du produit distant 'id:%s' sur le site '%s'
+ECommerceSynchProductDownloadImageError=Erreur de récupération de l'image (%s) pour le produit 'id:%s' du produit distant 'id:%s' sur le site '%s'
 
 ECommerceNoDescForProductLine=L'API n'a pas pu récupérer la description du produit
 
@@ -265,7 +266,7 @@ SyncProductFirst           =Synchroniser d'abord les produits
 
 ECommerceCreateRemoteCategoryLink  =Erreur de la création du lien de la catégorie 'id:%s' sur le site '%s': %s
 
-ECommerceSyncheCommerceMotherCategoryCreateError=Erreur de création du lien de la catégorie racine pour la catégorie distante '%s' 'id:%s' sur le site '%s'.
+ECommerceSynchMotherCategoryCreateError=Erreur de création du lien de la catégorie racine pour la catégorie distante '%s' 'id:%s' sur le site '%s'.
 ECommerceNGUpdateElementDateMoreRecent=Inclus aussi les éléments dont la date de mise à jour est plus récente que celle de synchronisation
 ProductsSyncSetup=Synchronisation des produits
 AllDirection=Dans les deux sens

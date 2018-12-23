@@ -917,7 +917,7 @@ class eCommerceSynchro
                                 $result = $this->eCommerceMotherCategory->create($this->user);
                                 if ($result < 0) {
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceMotherCategoryCreateError', $categoryArray['label'], $categoryArray['category_id'], $this->eCommerceSite->id);
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchMotherCategoryCreateError', $categoryArray['label'], $categoryArray['category_id'], $this->eCommerceSite->id);
                                     $this->errors = array_merge($this->errors, $this->eCommerceMotherCategory->errors);
                                     break;
                                 }
@@ -1018,7 +1018,7 @@ class eCommerceSynchro
                                 if ($this->eCommerceCategory->update($this->user) < 0)
                                 {
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceCategoryUpdateError');
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchCategoryUpdateError');
                                     $this->errors = array_merge($this->errors, $this->eCommerceCategory->errors);
                                     break;
                                 }
@@ -1028,7 +1028,7 @@ class eCommerceSynchro
                                 if ($this->eCommerceCategory->create($this->user) < 0)  // insert into table lxx_ecommerce_category
                                 {
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceCategoryCreateError') . ' ' . $categoryArray['label'];
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchCategoryCreateError') . ' ' . $categoryArray['label'];
                                     $this->errors = array_merge($this->errors, $this->eCommerceCategory->errors);
                                     break;
                                 }
@@ -1057,7 +1057,7 @@ class eCommerceSynchro
                                     // The first time insert of categorie + link is ok, then insert of categorie return -4 and insert of link is duplicate !
 
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceCategoryCreateError') . ' ' . $dBCategorie->error;
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchCategoryCreateError') . ' ' . $dBCategorie->error;
                                     $this->errors[] = $this->langs->trans("ECommerceCheckIfCategoryDoesNotExistsTwice");
                                     $this->errors = array_merge($this->errors, $this->eCommerceCategory->errors);
                                     break;
@@ -1331,7 +1331,7 @@ class eCommerceSynchro
                             if ($this->eCommerceSociete->update($this->user) < 0)
                             {
                                 $error++;
-                                $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceSocieteUpdateError') . ' ' . $societeArray['name'] . ' ' . $societeArray['email'] . ' ' . $societeArray['client'];
+                                $this->errors[] = $this->langs->trans('ECommerceSynchSocieteUpdateError') . ' ' . $societeArray['name'] . ' ' . $societeArray['email'] . ' ' . $societeArray['client'];
                                 $this->errors = array_merge($this->errors, $this->eCommerceSociete->errors);
                             }
                         }
@@ -1344,7 +1344,7 @@ class eCommerceSynchro
                             if ($this->eCommerceSociete->create($this->user) < 0)
                             {
                                 $error++;
-                                $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceSocieteCreateError') . ' ' . $societeArray['name'] . ' ' . $societeArray['email'] . ' ' . $societeArray['client'].' '.$this->eCommerceSociete->error;
+                                $this->errors[] = $this->langs->trans('ECommerceSynchSocieteCreateError') . ' ' . $societeArray['name'] . ' ' . $societeArray['email'] . ' ' . $societeArray['client'].' '.$this->eCommerceSociete->error;
                                 $this->errors = array_merge($this->errors, $this->eCommerceSociete->errors);
                             }
                         }
@@ -1552,7 +1552,7 @@ class eCommerceSynchro
                     //eCommerce update
                     if ($this->eCommerceSocpeople->update($this->user) < 0)
                     {
-                        $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceSocpeopleUpdateError');
+                        $this->errors[] = $this->langs->trans('ECommerceSynchSocpeopleUpdateError');
                         $this->errors = array_merge($this->errors, $this->eCommerceSocpeople->errors);
                         return false;
                     }
@@ -1566,7 +1566,7 @@ class eCommerceSynchro
                     $this->eCommerceSocpeople->type = $socpeopleArray['type'];
                     if ($this->eCommerceSocpeople->create($this->user) < 0)
                     {
-                        $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceSocpeopleCreateError', $socpeopleArray['fk_soc'], $socpeopleArray['firstname'], $socpeopleArray['lastname']) . ' : ' . $this->eCommerceSocpeople->error;
+                        $this->errors[] = $this->langs->trans('ECommerceSynchSocpeopleCreateError', $socpeopleArray['fk_soc'], $socpeopleArray['firstname'], $socpeopleArray['lastname']) . ' : ' . $this->eCommerceSocpeople->error;
                         $this->errors = array_merge($this->errors, $this->eCommerceSocpeople->errors);
                         return false;
                     }
@@ -2000,7 +2000,7 @@ class eCommerceSynchro
 
                                         if (!$ret) {
                                             $error++;
-                                            $error_label = $this->langs->trans('ECommerceSyncheCommerceProductDownloadImageError',
+                                            $error_label = $this->langs->trans('ECommerceSynchProductDownloadImageError',
                                                     implode(',', $image), $dBProduct->id, $productArray['remote_id'], $this->eCommerceSite->name) . ': ' . $error_message;
                                             $this->errors[] = $error_label;
                                             dol_syslog($error_label, LOG_ERR);
@@ -2013,7 +2013,7 @@ class eCommerceSynchro
                             $ret = ecommerceext_remove_obsolete_image($dBProduct, $productArray['images'], $error_message);
                             if (!$ret) {
                                 $error++;
-                                $error_label = $this->langs->trans('ECommerceSyncheCommerceProductDownloadImageError',
+                                $error_label = $this->langs->trans('ECommerceSynchProductDownloadImageError',
                                         $dBProduct->id, $productArray['remote_id'], $this->eCommerceSite->name) . ': ' . $error_message;
                                 $this->errors[] = $error_label;
                                 dol_syslog($error_label, LOG_ERR);
@@ -2030,7 +2030,7 @@ class eCommerceSynchro
                             if ($this->eCommerceProduct->update($this->user) < 0)
                             {
                                 $error++;
-                                $this->error = $this->langs->trans('ECommerceSyncheCommerceProductUpdateError') . ' ' . $productArray['label'];
+                                $this->error = $this->langs->trans('ECommerceSynchProductUpdateError') . ' ' . $productArray['label'];
                                 $this->errors[] = $this->error;
                                 $this->errors = array_merge($this->errors, $this->eCommerceProduct->errors);
                                 dol_syslog($this->error, LOG_WARNING);
@@ -2049,7 +2049,7 @@ class eCommerceSynchro
                             if ($this->eCommerceProduct->create($this->user) < 0)
                             {
                                 $error++;
-                                $this->error = $this->langs->trans('ECommerceSyncheCommerceProductCreateError') . ' ' . $productArray['label'].', '.$this->eCommerceProduct->error;
+                                $this->error = $this->langs->trans('ECommerceSynchProductCreateError') . ' ' . $productArray['label'].', '.$this->eCommerceProduct->error;
                                 $this->errors[] = $this->error;
                                 $this->errors = array_merge($this->errors, $this->eCommerceProduct->errors);
                                 dol_syslog($this->error, LOG_WARNING);
@@ -2376,7 +2376,7 @@ class eCommerceSynchro
                                             $buyprice=0;
                                             $fk_product = $this->eCommerceProduct->fk_product;
                                             if (($result = $dBCommande->defineBuyPrice($item['price'], 0, $fk_product)) < 0) {
-                                                $this->error = $this->langs->trans('ECommerceSyncheCommerceCommandeUpdateError') . ' ' . $dBCommande->error;
+                                                $this->error = $this->langs->trans('ECommerceSynchCommandeUpdateError') . ' ' . $dBCommande->error;
                                                 $this->errors[] = $this->error;
                                                 $this->errors = array_merge($this->errors, $dbCommande->errors);
                                                 $error++;
@@ -2443,7 +2443,7 @@ class eCommerceSynchro
                                             dol_syslog("result=".$result);
                                             if ($result <= 0)
                                             {
-                                                $this->error = $this->langs->trans('ECommerceSyncheCommerceCommandeUpdateError').' '.$dBCommande->error;
+                                                $this->error = $this->langs->trans('ECommerceSynchCommandeUpdateError').' '.$dBCommande->error;
                                                 $this->errors[] = $this->error;
                                                 $this->errors = array_merge($this->errors, $dbCommande->errors);
                                                 $error++;
@@ -2481,7 +2481,7 @@ class eCommerceSynchro
                                         );
                                     if ($result <= 0)
                                     {
-                                        $this->error = $this->langs->trans('ECommerceSyncheCommerceCommandeUpdateError').' '.$dBCommande->error;
+                                        $this->error = $this->langs->trans('ECommerceSynchCommandeUpdateError').' '.$dBCommande->error;
                                         $this->errors[] = $this->error;
                                         $this->errors = array_merge($this->errors, $dbCommande->errors);
                                         $error++;
@@ -2620,7 +2620,7 @@ class eCommerceSynchro
                                 if ($this->eCommerceCommande->update($this->user) < 0)
                                 {
                                     $error++;
-                                    $this->error = $this->langs->trans('ECommerceSyncheCommerceCommandeUpdateError').' '.$this->eCommerceCommande->error;
+                                    $this->error = $this->langs->trans('ECommerceSynchCommandeUpdateError').' '.$this->eCommerceCommande->error;
                                     $this->errors[] = $this->error;
                                     $this->errors = array_merge($this->errors, $this->eCommerceCommande->errors);
                                 }
@@ -2639,7 +2639,7 @@ class eCommerceSynchro
                                 if ($this->eCommerceCommande->create($this->user) < 0)
                                 {
                                     $error++;
-                                    $this->error = $this->langs->trans('ECommerceSyncheCommerceCommandeCreateError').' '.$dBCommande->id.', '.$this->eCommerceCommande->error;
+                                    $this->error = $this->langs->trans('ECommerceSynchCommandeCreateError').' '.$dBCommande->id.', '.$this->eCommerceCommande->error;
                                     $this->errors[] = $this->error;
                                     $this->errors = array_merge($this->errors, $this->eCommerceCommande->errors);
                                     dol_syslog($this->error, LOG_WARNING);
@@ -3034,7 +3034,7 @@ class eCommerceSynchro
                                         if (($result = $dBFacture->defineBuyPrice($item['price'], 0, $fk_product)) < 0)
                                         {
                                             $error++;
-                                            $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceFactureUpdateError').' '.$dbFacture->error;
+                                            $this->errors[] = $this->langs->trans('ECommerceSynchFactureUpdateError').' '.$dbFacture->error;
                                             $this->errors = array_merge($this->errors, $dbFacture->errors);
                                             break;	// break items
                                         }
@@ -3257,7 +3257,7 @@ class eCommerceSynchro
                                 if ($this->eCommerceFacture->update($this->user) < 0)
                                 {
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceFactureUpdateError').' '.$this->eCommerceFacture->error;
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchFactureUpdateError').' '.$this->eCommerceFacture->error;
                                     $this->errors = array_merge($this->errors, $this->eCommerceFacture->errors);
                                 }
                             }
@@ -3274,9 +3274,9 @@ class eCommerceSynchro
                                 if ($this->eCommerceFacture->create($this->user) < 0)
                                 {
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSyncheCommerceFactureCreateError').' '.$dBFacture->id.', '.$this->eCommerceFacture->error;
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchFactureCreateError').' '.$dBFacture->id.', '.$this->eCommerceFacture->error;
                                     $this->errors = array_merge($this->errors, $this->eCommerceFacture->errors);
-                                    dol_syslog($this->langs->trans('ECommerceSyncheCommerceFactureCreateError') . ' ' . $dBFacture->id.', '.$this->eCommerceFacture->error, LOG_WARNING);
+                                    dol_syslog($this->langs->trans('ECommerceSynchFactureCreateError') . ' ' . $dBFacture->id.', '.$this->eCommerceFacture->error, LOG_WARNING);
                                 }
                             }
                         }
