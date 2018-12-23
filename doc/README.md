@@ -4,6 +4,8 @@
 
 You have to rename the folder to `ecommerceext` when you download the zip file or make a git clone. In other case the module will not work.
 
+The module should be placed in Dolibarr `custom` folder.
+
 Requirements:
 * PHP minimum version: 5.3
 * PHP modules: `php-soap`
@@ -36,6 +38,12 @@ To see a product into magento shop, you must have "_Stock Availability_" set to 
 Note about status in Magento: https://black.bird.eu/fr/blog/comprendre-les-etats-des-commandes-dans-magento.html
 
 ## Dolibarr
+### Setup
+
+For the extension to be able to contact your e-commerce site, you must:
+* if you access your server behind a proxy using url rewriting, make sure that all HTTP header are propagated to transmit CSRF token;
+* or you can disable CSRF checks: add the line `$dolibarr_nocsrfcheck=1` into your `conf.php` file.
+
 ### Configuration
 
 If you have products without _SKU_, you must go to Dolibarr Products module settings:
@@ -45,7 +53,7 @@ Example of automatic SKU format:
 * Products: `PDT-{yyyy}{mm}-{000000000@0}`
 * Services: `SRV-{yyyy}{mm}-{000000000@0}`
 
-In the "_e-Commerce synchro" settings:
+In the "_e-Commerce synchro_" settings:
 * Configure a new site
 * Use the API key and secret you generated in your e-commerce site
 
