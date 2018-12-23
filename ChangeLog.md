@@ -3,6 +3,10 @@
 ## 4.1.2.0
 
 * Correction de la récupération des classes de TVA
+* Correction de la syncrhonisation des variantes de produit sous WooCommerce
+* Sécurisation de la génération de l'accès au site e-commerce
+* Ajout de documentation sur l'installation et la configuration
+* Ajout de traductions manquantes
 
 ## 4.1.1.0
 
