@@ -71,6 +71,7 @@ ECommerceSetupCatSocieteEmpty=Une catégorie client est obligatoire.
 ECommerceSetupTypeEmpty=Le type de site est obligatoire.
 ECommerceSetupAddressEmpty=L'adresse du site est obligatoire.
 ECommerceConnectErrorCheckUsernamePasswordAndAdress=Erreur de connection, veuillez vérifier les paramètres de connection.
+ECommerceConnectErrorCheckSiteType=Erreur d'accès distant, veuillez vérifier le type du site e-commerce.
 ECommerceSociete=Tiers clients
 ECommerceSiteSynchro=Synchronisation du site
 ECommerceProducts=Produits
@@ -124,8 +125,11 @@ ECommerceSynchCommandeError=Erreur durant la synchronisation des commandes
 ECommerceCheckIfCategoryDoesNotExistsTwice=Essayez de rendre unique le nom de vos catégories sur votre plate-forme e-commerce
 
 ECommerceSynchSocpeopleCreateError=Une erreur est survenue lors de l'enregistrement du contact (ID tiers: %s; prénom: %s; nom de famille: %s).
+
 ECommerceSynchProductCreateError=Erreur lors de la création du lien entre le produit Dolibarr et le produit e-commerce
 ECommerceSynchProductUpdateError=Erreur lors de la mise à jour du lien entre le produit Dolibarr et le produit e-commerce
+ErrorBadRef=Au moins un des produits à synchroniser n'a pas de référence
+
 ECommerceSynchCommandeCreateError=Erreur lors de la création du lien entre la commande Dolibarr et la commande e-commerce
 
 ECommerceSetupSites=Configuration des sites

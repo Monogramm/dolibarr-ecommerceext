@@ -114,6 +114,8 @@ class eCommerceSynchro
      * @param eCommerceSite     $site         Object eCommerceSite
      * @param datetime          $toDate       Ending date to synch all data modified before this date (null by default = until now)
      * @param int               $toNb         Max nb of record to count or synch (Used only for synch, not for count for the moment !)
+	 * 
+     * @throws \InvalidArgumentException
      */
     function __construct($db, $site, $toDate=null, $toNb=0)
     {
@@ -133,6 +135,12 @@ class eCommerceSynchro
         catch (Exception $e)
         {
             $this->errors[] = $this->langs->trans('ECommerceConnectErrorCheckUsernamePasswordAndAdress');
+        }
+
+        if (empty($this->eCommerceRemoteAccess)) {
+            dol_syslog(__METHOD__ . ": Could not create remote access class", LOG_DEBUG);
+            $msg = $this->langs->trans('ECommerceConnectErrorCheckSiteType');
+            throw new \InvalidArgumentException($msg);
         }
     }
 
@@ -1731,6 +1739,7 @@ class eCommerceSynchro
 
                     //check if product exists in eCommerceProduct (with remote id)
                     $refExists = 0;
+                    $ref = dol_string_nospecial(trim($productArray['ref']));
                     $synchExists = $this->eCommerceProduct->fetchByRemoteId($productArray['remote_id'], $this->eCommerceSite->id);
                     if ($synchExists > 0) {
                         $dBProduct->id = $this->eCommerceProduct->fk_product;
@@ -1738,22 +1747,22 @@ class eCommerceSynchro
                         if ($refExists <= 0) {
                             $dBProduct->id = 0;
                             $synchExists = 0;
-                        } else {
-                            $ref = dol_string_nospecial(trim($productArray['ref']));
-                            if (!empty($ref)) {
-                                $dBProductTemp = new Product($this->db);
-                                $refExists = $dBProductTemp->fetch('', $ref);
-                                if ($dBProduct->id != $dBProductTemp->id) {
-                                    $dBProduct = new Product($this->db);
-                                    $refExists = 0;
-                                    $synchExists = 0;
-                                }
+                        } else if (!empty($ref)) {
+                            $dBProductTemp = new Product($this->db);
+                            $refExists = $dBProductTemp->fetch('', $ref);
+                            if ($dBProduct->id != $dBProductTemp->id) {
+                                $dBProduct = new Product($this->db);
+                                $refExists = 0;
+                                $synchExists = 0;
                             }
+                        } else {
+                            // If synch exists, use ref from DB
+                            $ref = $dBProduct->ref;
                         }
                     }
+
                     if (!($refExists > 0)) {
                         // First, we check object does not alreay exists. If not, we create it, if it exists, update it.
-                        $ref = dol_string_nospecial(trim($productArray['ref']));
                         if (!empty($ref)) {
                             $refExists = $dBProduct->fetch('', $ref);
                             if ($refExists > 0) {
@@ -1761,7 +1770,7 @@ class eCommerceSynchro
                                 if ($synchExists > 0 && $this->eCommerceProduct->remote_id != $productArray['remote_id']) {
                                     dol_syslog('Error: Remote product (ref: '.$ref.', remote id: '.$productArray['remote_id'].') already linked with other remote product (remote id: '.$this->eCommerceProduct->remote_id.")", LOG_DEBUG);
                                     $error++;
-                                    $this->errors[] = $this->langs->trans('ECommerceSynchProductError') . ' Ref: ' . $productArray['ref'] . ', Nom: ' . $productArray['label'] . ', remote ID: ' . $productArray['remote_id'];
+                                    $this->errors[] = $this->langs->trans('ECommerceSynchProductError') . ' Ref: ' . $productArray['ref'] . ', Label: ' . $productArray['label'] . ', remote ID: ' . $productArray['remote_id'];
                                     $this->errors[] = $this->langs->trans('ECommerceErrorProductAlreadyLinkedWithRemoteProduct', $this->eCommerceProduct->remote_id);
                                     break;
                                 }
@@ -1772,7 +1781,7 @@ class eCommerceSynchro
                     }
 
                     //libelle of product object = label into database
-                    $dBProduct->ref = dol_string_nospecial(trim($productArray['ref']));
+                    $dBProduct->ref = $ref;
                     $dBProduct->label = $productArray['label'];
                     $dBProduct->description = isset($productArray['description']) ? $productArray['description'] : $dBProduct->description;
                     $dBProduct->weight = isset($productArray['weight']) ? $productArray['weight'] : $dBProduct->weight;

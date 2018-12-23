@@ -377,10 +377,10 @@ class eCommerceRemoteAccessWoocommerce
 
                 // Variations
                 foreach ($product->variations as $variation) {
-                    $id = $product->id . '|' . $variation->id;
+                    $id = $product->id . '|' . $variation;
                     $date_variation = $this->getDateTimeFromGMTDateTime(!empty($variation->date_modified_gmt) ? $variation->date_modified_gmt : $variation->date_created_gmt);
                     $update_variante = false;
-                    if ($from_date == $date_product) {
+                    if (!$update && $from_date == $date_product) {
                         if ($this->eCommerceProduct->fetchByRemoteId($id, $this->site->id) > 0) {
                             if (isset($this->eCommerceProduct->last_update) && !empty($this->eCommerceProduct->last_update)) {
                                 $date = new DateTime(dol_print_date($this->eCommerceProduct->last_update, 'standard'));
@@ -395,7 +395,7 @@ class eCommerceRemoteAccessWoocommerce
 
                     if ($update || $update_variante || ((!isset($from_date) || $from_date < $date_variation) && (!isset($to_date) || $date_variation <= $to_date))) {
                         $result[$id] = $id;
-                        $last_update[$id] = $date_product->format('Y-m-d H:i:s'); //$date_product > $date_variation ? $date_product->format('Y-m-d H:i:s') : $date_variation->format('Y-m-d H:i:s');
+                        $last_update[$id] = $date_product > $date_variation ? $date_product->format('Y-m-d H:i:s') : $date_variation->format('Y-m-d H:i:s');
                         $product_variation[$id] = 1;
                     }
                 }
@@ -783,7 +783,6 @@ class eCommerceRemoteAccessWoocommerce
                             'remote_id' => $remote_id,
                             'last_update' => $last_update,
                             'fk_product_type' => ($product->virtual ? 1 : 0), // 0 (product) or 1 (service)
-                            'ref' => $product->sku,
                             'label' => $product->name,
                             'weight' => $product->weight,
                             'price' => $product->price,
@@ -895,8 +894,8 @@ class eCommerceRemoteAccessWoocommerce
                                     'fk_product_type' => ($variation->virtual ? 1 : 0), // 0 (product) or 1 (service)
                                     'label' => $product->name . $attributesLabel,
                                     'price' => $variation->price,
-                                    'envente' => 1,
-                                    'enachat' => 1,
+                                    'envente' => empty($variation->on_sale) ? 0 : 1,
+                                    'enachat' => empty($variation->purchasable) ? 0 : 1,
                                     'finished' => 1,    // 1 = manufactured, 0 = raw material
                                     'canvas' => $canvas,
                                     'categories' => $categories,
@@ -905,7 +904,7 @@ class eCommerceRemoteAccessWoocommerce
                                     'url' => $variation->permalink,
                                     // Stock
                                     'stock_qty' => $variation->stock_quantity,
-                                    'is_in_stock' => $variation->in_stock,   // not used
+                                    'is_in_stock' => $variation->stock_status == 'instock' ? 1 : 0,
                                     'extrafields' => [
                                     ],
                                     //'images' => $images,

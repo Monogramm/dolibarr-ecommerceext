@@ -71,6 +71,7 @@ ECommerceSetupCatSocieteEmpty=Customer category is required.
 ECommerceSetupTypeEmpty=Site type is required.
 ECommerceSetupAddressEmpty=Address site is required.
 ECommerceConnectErrorCheckUsernamePasswordAndAdress=Error login, please check connection settings.
+ECommerceConnectErrorCheckSiteType=Error remote access, please check e-commerce site type.
 ECommerceSociete=Customer third parties
 ECommerceSiteSynchro=Synchronizing Site
 ECommerceProducts=Products
@@ -124,8 +125,11 @@ ECommerceSynchCommandeError=Error during synchronization of orders
 ECommerceCheckIfCategoryDoesNotExistsTwice=Try to make name of your categories unique on your e-commerce platform
 
 ECommerceSynchSocpeopleCreateError=An error occured while saving contact (thirdparty ID: %s; first name: %s; last name: %s).
+
 ECommerceSynchProductCreateError=Error creating the link between Dolibarr product and e-commerce product
 ECommerceSynchProductUpdateError=Error updating the link between Dolibarr product and e-commerce product
+ErrorBadRef=At least one of the products to synchronize has no reference defined
+
 ECommerceSynchCommandeCreateError=Error creating the link between Dolibarr order and e-commerce order
 
 ECommerceSetupSites=Setup sites e-commerce

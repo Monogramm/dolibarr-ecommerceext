@@ -35,6 +35,8 @@ class eCommerceRemoteAccess
      *
      * @param   Database            $db         Databse handler
      * @param   eCommerceSite       $site       eCommerceSite
+	 * 
+     * @throws \InvalidArgumentException
      */
     function eCommerceRemoteAccess($db, $site)
     {
@@ -43,11 +45,11 @@ class eCommerceRemoteAccess
 
         $this->setName();
 
-        dol_include_once('/ecommerceext/class/data/'.$this->dirName.'/eCommerceRemoteAccess'.$this->className.'.class.php');
+		dol_include_once('/ecommerceext/class/data/'.$this->dirName.'/eCommerceRemoteAccess'.$this->className.'.class.php');
 
-        $this->setClass();
+		$this->setClass();
 
-        return 1;
+		return 1;
     }
 
 	private function setName()
@@ -56,6 +58,11 @@ class eCommerceRemoteAccess
 		$name = $types[$this->site->type];
 		$this->className = str_replace(' ','',ucwords($name));
 		$this->dirName = str_replace(' ','',strtolower($name));
+
+		if (empty($this->className)) {
+			dol_syslog(__METHOD__ . ": Could not define type of site '$name'", LOG_DEBUG);
+			throw new \InvalidArgumentException("The site type '$name' is not available.");
+		}
 	}
 
     private function setClass()
