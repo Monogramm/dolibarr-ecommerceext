@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 4.1.3.0
+
+* Correction de la synchronisation des produits
+* Ajout de documentation sur la configuration WordPress
+
 ## 4.1.2.0
 
 * Correction de la récupération des classes de TVA
