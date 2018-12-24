@@ -25,6 +25,12 @@ Go in WordPress Settings:
 * Change permalinks to anything **but** simple
 
 
+If you plan to enable image synchronization from Dolibarr to WordPress, you will need to install and configure an OAuth server module for WordPress.
+We recommend you use "_WP OAuth Server_". Once installed, go into WP OAuth Server:
+* enable Oauth server and block unauthenticated Requests (the latter is not needed for `ecommerceext` but recommended for your own security)
+* create a client with "_Authorization Code_" and admin rights. Copy and paste the credentials to `ecommerceext` OAuth settings for WordPress
+* generate a token for Dolibarr in your e-commerce site configuration
+
 ## Magento configuration
 
 **Magento synchronization rework is in progress and has been disabled. To enable it, go to `eCommerceSite.class.php` and uncomment the Magento `$siteTypes`.**
