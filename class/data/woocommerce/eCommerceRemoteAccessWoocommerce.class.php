@@ -786,7 +786,7 @@ class eCommerceRemoteAccessWoocommerce
                             'label' => $product->name,
                             'weight' => $product->weight,
                             'price' => $product->price,
-                            'envente' => empty($product->variations) ? 1 : 0,
+                            'envente' => empty($product->variations) ? (empty($product->purchasable) ? 0 : 1) : 0,
                             'enachat' => empty($product->variations) ? 1 : 0,
                             'finished' => 1,    // 1 = manufactured, 0 = raw material
                             'canvas' => $canvas,
@@ -894,8 +894,8 @@ class eCommerceRemoteAccessWoocommerce
                                     'fk_product_type' => ($variation->virtual ? 1 : 0), // 0 (product) or 1 (service)
                                     'label' => $product->name . $attributesLabel,
                                     'price' => $variation->price,
-                                    'envente' => empty($variation->on_sale) ? 0 : 1,
-                                    'enachat' => empty($variation->purchasable) ? 0 : 1,
+                                    'envente' => empty($variation->purchasable) ? 0 : 1,
+                                    'enachat' => 1,
                                     'finished' => 1,    // 1 = manufactured, 0 = raw material
                                     'canvas' => $canvas,
                                     'categories' => $categories,
