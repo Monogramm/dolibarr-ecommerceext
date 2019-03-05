@@ -191,13 +191,13 @@ ECommerceShipping=Shipping
 ECommercePriceLevel=Price level
 ECommercePriceLevelDescription=Only this price level are synchronized between Dolibarr and e-commerce
 ECommerceConfirmUpdatePriceLevel=You have changed the price level and the products on the e-commerce will be updated.\nThis may take a long time, please confirm.
-SeeECommerceConfFileIfKo=See content of file <strong>%s</strong>, on your e-commerce server, if this URL does not work.
+SeeECommerceConfFileIfKo=See configuration of your e-commerce server with your administrator, if this URL does not work.
 RestrictCountAndSynchForRecordBefore=Restrict count and synchronize for record with a last modification date in e-commerce before
 RestrictNbInSync=Restrict number of record of same object type to synchronize in same request
 SynchUnkownCustomersOnThirdParty=Use the following thirdparty for orders done on unknown customers (non logged customers)
 ThirdPartyForNonLoggedUsers=Third party for anonymous/non logged users
 BankAccountForPayments=Bank account for invoice payments
-SynchPaymentsOnWichBankAccount=Bank account to use for payments when creating a paid invoice from Magento
+SynchPaymentsOnWhichBankAccount=Bank account to use for payments when creating a paid invoice from e-commerce site
 
 
 ## OAuth Setup ##

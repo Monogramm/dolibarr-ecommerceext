@@ -56,7 +56,7 @@ $var=!$var;
 				<?php $url=$site->getFrontUrl(); print $langs->trans("FrontOffice").': <a href="'.$url.'" target="_frontsite">'.$url.'</a>'; ?>
 				<?php $url=$site->getBackUrl();
 				print '<br>';
-				print $form->textwithpicto($langs->trans("BackOffice"), $langs->trans("SeeECommerceConfFileIfKo",'app/etc/local.xml'));
+				print $form->textwithpicto($langs->trans("BackOffice"), $langs->trans("SeeECommerceConfFileIfKo"));
 				print ': <a href="'.$url.'" target="_backsite">'.$url.'</a>'; ?>
 			</td>
 		</tr>

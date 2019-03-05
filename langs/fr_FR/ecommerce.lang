@@ -31,9 +31,9 @@ ECommerceSetupSite=Configuration du site
 ECommerceSiteName=Nom du site
 ECommerceSiteNameDescription=Indiquez le nom qui sera affiché dans la liste des site e-commerce dans Dolibarr (exemple : "Mon Site")
 ECommerceCatProduct=Catégorie des produits
-ECommerceCatProductDescription=Sélectionnez la catégorie Produit mère Dolibarr qui accueille les catégories Produit à synchroniser avec la plateforme e-commerce (à créer une fois le module Catégories de Dolibarr activé). Exemple: "Catégories Produits Magento"
+ECommerceCatProductDescription=Sélectionnez la catégorie Produit mère Dolibarr qui accueille les catégories Produit à synchroniser avec la plateforme e-commerce (à créer une fois le module Catégories de Dolibarr activé). Exemple: "Produits boutique en ligne"
 ECommerceCatSociete=Catégorie des clients
-ECommerceCatSocieteDescription=Sélectionnez la catégorie Tiers client Dolibarr pour marquer les clients e-commerce (à créer une fois le module Catégories Dolibarr activé). Exemple: "Clients Eboutique Magento"
+ECommerceCatSocieteDescription=Sélectionnez la catégorie Tiers client Dolibarr pour marquer les clients e-commerce (à créer une fois le module Catégories Dolibarr activé). Exemple: "Clients boutique en ligne"
 ECommerceFilterLabel=Libellé du filtre
 ECommerceFilterLabelDescription=Indiquez un filtre (exemple : store_id)
 ECommerceFilterValue=Valeur du filtre
@@ -191,13 +191,13 @@ ECommerceShipping=Frais de port
 ECommercePriceLevel=Niveau de prix
 ECommercePriceLevelDescription=Seul ce niveau de prix sera synchronisé entre Dolibarr et e-commerce
 ECommerceConfirmUpdatePriceLevel=Vous avez modifié le niveau de prix. Les produits sur le site e-commerce vont être mis à jour.\nCette opération peut être longue, merci de confirmer.
-SeeECommerceConfFileIfKo=Voir le contenu du fichier <strong>%s</strong> sur votre serveur e-commerce si cette URL ne fonctionne pas.
+SeeECommerceConfFileIfKo=Voir avec votre administrateur la configuration de votre serveur e-commerce si cette URL ne fonctionne pas.
 RestrictCountAndSynchForRecordBefore=Limiter le nombre et synchroniser les objets avec une date de dernière modification dans la boutique e-commerce avant
 RestrictNbInSync=Restreindre le nombre d'enregistrements d'un même type d'objet à synchroniser dans la même requête
 SynchUnkownCustomersOnThirdParty=Utiliser le tiers suivant pour les commandes effectuées sur des clients inconnus (clients non connectés)
 ThirdPartyForNonLoggedUsers=Tiers pour les utilisateurs anonymes/non connectés
 BankAccountForPayments=Compte bancaire pour le paiement des factures
-SynchPaymentsOnWichBankAccount=Compte bancaire à utiliser pour les paiements lors de la création d'une facture payée dans Magento
+SynchPaymentsOnWhichBankAccount=Compte bancaire à utiliser pour les paiements lors de la création d'une facture payée dans le site e-commerce
 
 
 

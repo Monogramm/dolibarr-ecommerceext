@@ -167,7 +167,7 @@ $var=!$var;
     $form->select_comptes($conf->global->ECOMMERCE_BANK_ID_FOR_PAYMENT,'ECOMMERCE_BANK_ID_FOR_PAYMENT',0,'',2);
     ?>
   </td>
-  <td><?php print $langs->trans('SynchPaymentsOnWichBankAccount') ?></td>
+  <td><?php print $langs->trans('SynchPaymentsOnWhichBankAccount') ?></td>
 </tr>
 <?php
 $var=!$var;
