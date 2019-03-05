@@ -1913,6 +1913,7 @@ class eCommerceSynchro
                         {
                             $error++;
                             if ($dBProduct->error == 'ErrorProductAlreadyExists') $this->error=$this->langs->trans('ECommerceSynchProductCreateError').' '.$this->langs->trans($dBProduct->error, $dBProduct->ref);
+                            else if ($dBProduct->error == 'ProductModuleNotSetupForAutoRef') $this->error=$this->langs->trans('ErrorBadRef');
                             else $this->error=$this->langs->trans('ECommerceSynchProductCreateError').' '.$dBProduct->error;
                             $this->errors[] = $this->error;
                             $this->errors = array_merge($this->errors, $dBProduct->errors);
