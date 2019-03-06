@@ -461,7 +461,7 @@ class eCommerceCategory // extends CommonObject
 
         if ($resql)
         {
-            if ($this->db->num_rows($resql) == 1)
+            if ($this->db->num_rows($resql))
             {
                 $obj = $this->db->fetch_object($resql);
 
@@ -511,7 +511,7 @@ class eCommerceCategory // extends CommonObject
 
         if ($resql)
         {
-            if ($this->db->num_rows($resql) == 1)
+            if ($this->db->num_rows($resql))
             {
                 $obj = $this->db->fetch_object($resql);
                 $resCall = $this->fetchByRemoteId($obj->remote_id, $siteId);

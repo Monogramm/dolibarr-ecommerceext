@@ -119,7 +119,8 @@ ECommerceSynchSocieteSuccess=customers have been synchronized.
 ECommerceSynchProductSuccess=products have been synchronized.
 ECommerceSynchCommandeSuccess=orders have been synchronized.
 ECommerceSynchFactureSuccess=bills have been synchronized.
-
+ECommerceSynchSocieteFailed=%s errors occurred during synchronization.
+ECommerceSynchECommerceSocpeopleCreateError=An error occurred while saving the contact (company ID: %s, first name: %s, name: %s).
 ECommerceSynchCommandeError=Error during synchronization of orders
 
 ECommerceCheckIfCategoryDoesNotExistsTwice=Try to make name of your categories unique on your e-commerce platform
@@ -297,3 +298,7 @@ ECommerceResetCategoriesProductSuccess=products categories on site have been suc
 
 ECommerceSynchProductError=Error while synchronizing the remote product:
 ECommerceErrorProductAlreadyLinkedWithRemoteProduct=The product with this ref. is already bound to the remote product ID: %s.
+
+ECommerceOnlyNew     = Only new
+
+ECommerceUpdateRemoteCompanyLinkWhenMergeCompany    = Error updating company link 'id: %s' when merging with company 'id: %s': %s

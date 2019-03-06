@@ -309,10 +309,10 @@ if ($id)
 		if ($user->rights->ecommerceext->write)
 			$synchRights = true;                // Set permission ok for .tpl
 
-		if (count($synchro->success))
+		if (@count($synchro->success))
 			$success = $synchro->success;
 
-		if (count($synchro->errors))
+		if (@count($synchro->errors))
 			$errors = $synchro->errors;
 	}
 	catch (Exception $e)

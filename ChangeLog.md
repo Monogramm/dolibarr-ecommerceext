@@ -25,6 +25,33 @@
 * Renommage en eCommerceExt et renommage des constantes existantes
 * Ajout de ECOMMERCE_MAX_RESPONSE_TIMEOUT pour configurer le timeout des API
 
+## 4.0.29.0
+
+- Correction sur la date de synchronisation des clients qui se basais sur la date de modification et non celle de création.
+
+## 4.0.28.0
+
+- Ajout de la variable globale ECOMMERCENG_PRODUCT_IN_PURCHASE_WHEN_CREATED pour permettre de mettre les produit creer sur dolibarr lors de la synchronisation au statut 'En achat'.
+- Ne met plus à jour le statut 'En achat' lors de la synchronisation.
+- Ajout des corrections et améliorations de Ewake.
+
+## 4.0.27.0
+
+- Ajout d'une variable global ECOMMERCENG_WOOCOMMERCE_VAT_NUMBER_META_NAME pour renseigner le nom de la meta donnée correspondant à la TVA client.
+- Correction de la prise en consideration du pays lors de la creation du tiers.
+- Ajout d'une variable global ECOMMERCENG_WOOCOMMERCE_DEFAULT_LANG_OTHER_COUNTRY pour renseigner la langue par défaut si le pays du tiers est different de sa société sinon laisse vide
+- Création d'un nouveau tiers si le nom de la société de facturation est different de celui de livraison sur une commande et rattache le contact de livraison à celui-ci.
+- Ne synchronise maintenant que les nouveaux tiers de Woocmmerce vers Dolibarr.
+- Récupère tous les types de tiers (quelques soit le role de l'utilisateur).
+- Une société peut être lié à plusieurs utilisateurs de woocommerce.
+- Corrections synchronisations des contacts lors de la synchronisation des tiers de Woocmmerce vers Dolibarr.
+- Support la fusion des sociétés.
+
+## 4.0.26.0
+
+- Ajout du choix du type de prix sur WooCommerce (régulier ou de vente) synchronisé avec le prix de vente sur Dolibarr.
+- Correction synchronisation du prix de vente minimum de ECommerce vers Dolibarr.
+
 ## 4.0.25.0
 
 * La suppression des liens des produits supprime aussi les catégories de la boutique sur les produits.

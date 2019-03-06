@@ -132,6 +132,9 @@ ErrorBadRef=Au moins un des produits à synchroniser n'a pas de référence
 
 ECommerceSynchCommandeCreateError=Erreur lors de la création du lien entre la commande Dolibarr et la commande e-commerce
 
+ECommerceSynchSocieteFailed=%s erreurs se sont produites lors de la synchronisation.
+
+ECommerceSynchECommerceSocpeopleCreateError=Une erreur est survenue lors de l'enregistrement du contact (societe ID: %s; prénom: %s; nom: %s).
 ECommerceSetupSites=Configuration des sites
 ECommerceTimeout=Timeout des accès APIs
 ECommerceSetupTimeoutEmpty=Durée de connexion vide
@@ -298,3 +301,7 @@ ECommerceResetCategoriesProductSuccess=catégories du site sur les produits ont 
 
 ECommerceSynchProductError=Erreur lors de la synchronisation du produit distant:
 ECommerceErrorProductAlreadyLinkedWithRemoteProduct=Le produit avec cette réf. est déjà lié au produit distant ID: %s.
+
+ECommerceOnlyNew = Seulement les nouveaux
+
+ECommerceUpdateRemoteCompanyLinkWhenMergeCompany    = Erreur de mise à jour des lien de la société 'id:%s' lors de la fusion avec la société 'id:%s': %s
