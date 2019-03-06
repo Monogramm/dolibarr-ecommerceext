@@ -380,7 +380,7 @@ class eCommerceRemoteAccessWoocommerce
                     $id = $product->id . '|' . $variation;
                     $date_variation = $this->getDateTimeFromGMTDateTime(!empty($variation->date_modified_gmt) ? $variation->date_modified_gmt : $variation->date_created_gmt);
                     $update_variante = false;
-                    if (!$update && $from_date == $date_product) {
+                    if (!$update && $from_date == $date_variation) {
                         if ($this->eCommerceProduct->fetchByRemoteId($id, $this->site->id) > 0) {
                             if (isset($this->eCommerceProduct->last_update) && !empty($this->eCommerceProduct->last_update)) {
                                 $date = new DateTime(dol_print_date($this->eCommerceProduct->last_update, 'standard'));
