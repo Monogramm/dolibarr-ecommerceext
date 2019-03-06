@@ -1329,8 +1329,8 @@ class eCommerceSynchro
                         $cat->fetch($this->eCommerceSite->fk_cat_societe);
                         $cat->add_type($dBSociete, 'customer');
 
-                        dol_syslog("synchSociete Now we will update link rowid=".$this->eCommerceSociete->id." with last_update = ".$societeArray['date_modified']);
-                        $this->eCommerceSociete->last_update = $societeArray['date_modified'];
+                        dol_syslog("synchSociete Now we will update link rowid=".$this->eCommerceSociete->id." with last_update = ".$societeArray['last_update']);
+                        $this->eCommerceSociete->last_update = $societeArray['last_update'];
                         $this->eCommerceSociete->fk_societe = $dBSociete->id;
                         //if a previous synchro exists
                         if ($synchExists > 0 && !isset($this->error))
