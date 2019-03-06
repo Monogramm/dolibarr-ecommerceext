@@ -1,5 +1,11 @@
 # ChangeLog
 
+## 4.1.4.0
+
+* Correction de la synchronisation des variantes de produits
+* Correction de la synchronisation des clients
+* Ajout de message d'erreur spécifique si référence produit non renseigné
+
 ## 4.1.3.0
 
 * Correction de la synchronisation des produits
