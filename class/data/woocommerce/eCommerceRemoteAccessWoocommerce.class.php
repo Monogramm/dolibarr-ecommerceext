@@ -267,7 +267,7 @@ class eCommerceRemoteAccessWoocommerce
                             'fields' => 'id,date_created_gmt,date_modified_gmt',
                             'orderby' => 'registered_date',
                             'order' => 'desc'
-                        ], 
+                        ],
                         $filter
                     )
                 );
@@ -280,6 +280,8 @@ class eCommerceRemoteAccessWoocommerce
             }
 
             if (!is_array($page) || ($nbCustomers = count($page)) == 0) break;
+
+            dol_syslog(__METHOD__ . ": nbCustomers = " . $nbCustomers, LOG_DEBUG);
 
             foreach ($page as $customer) {
                 $id = $customer->id;
@@ -379,6 +381,8 @@ class eCommerceRemoteAccessWoocommerce
             }
 
             if (($nbProducts = count($page)) == 0) break;
+
+            dol_syslog(__METHOD__ . ": nbProducts = " . $nbProducts, LOG_DEBUG);
 
             foreach ($page as $product) {
                 $id = $product->id;
@@ -512,6 +516,8 @@ class eCommerceRemoteAccessWoocommerce
             }
 
             if (($nbOrders = count($page)) == 0) break;
+
+            dol_syslog(__METHOD__ . ": nbOrders = " . $nbOrders, LOG_DEBUG);
 
             foreach ($page as $order) {
                 $id = $order->id;
