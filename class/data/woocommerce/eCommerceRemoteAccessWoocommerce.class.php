@@ -176,7 +176,7 @@ class eCommerceRemoteAccessWoocommerce
     public function connect()
     {
         global $conf, $langs;
-    
+
         $response_timeout = (empty($conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT) ? 600 : $conf->global->ECOMMERCE_MAX_RESPONSE_TIMEOUT);    // Response timeout
         $isHTTPS = (bool) preg_match('/^https/i', $this->site->webservice_address);
 
@@ -238,14 +238,25 @@ class eCommerceRemoteAccessWoocommerce
         $last_update = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
-        $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
-        $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $filter = ['per_page' => $per_page];
-        // Not work with customers
-        //if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
-        //if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+
+        $from_date =  null;
+        if (isset($fromDate) && !empty($fromDate)) {
+            $from_date = new DateTime(dol_print_date($fromDate, 'standard'));
+            // Not available (yet) for customers
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        }
+
+        $to_date = null;
+        if (isset($toDate) && !empty($toDate)) {
+            $to_date = new DateTime(dol_print_date($toDate, 'standard'));
+            // Not available (yet) for customers
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+        }
 
         while (true) {
             try {
@@ -254,7 +265,7 @@ class eCommerceRemoteAccessWoocommerce
                         [
                             'page' => $idxPage++,
                             'fields' => 'id,date_created_gmt,date_modified_gmt'
-                        ], 
+                        ],
                         $filter
                     )
                 );
@@ -320,13 +331,25 @@ class eCommerceRemoteAccessWoocommerce
         $product_variation = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
-        $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
-        $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $filter = ['per_page' => $per_page];
-        if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
-        if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+
+        $from_date =  null;
+        if (isset($fromDate) && !empty($fromDate)) {
+            $from_date = new DateTime(dol_print_date($fromDate, 'standard'));
+            // Not available (yet) for products
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        }
+
+        $to_date = null;
+        if (isset($toDate) && !empty($toDate)) {
+            $to_date = new DateTime(dol_print_date($toDate, 'standard'));
+            // Not available (yet) for products
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+        }
 
         while (true) {
             try {
@@ -335,7 +358,7 @@ class eCommerceRemoteAccessWoocommerce
                         [
                             'page' => $idxPage++,
                             'fields' => 'id,date_created_gmt,date_modified_gmt,variations'
-                        ], 
+                        ],
                         $filter
                     )
                 );
@@ -441,13 +464,25 @@ class eCommerceRemoteAccessWoocommerce
         $last_update = [];
         $result = [];
         $idxPage = 1;
-        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
-        $from_date = isset($fromDate) && !empty($fromDate) ? new DateTime(dol_print_date($fromDate, 'standard')) : null;
-        $to_date = isset($toDate) && !empty($toDate) ? new DateTime(dol_print_date($toDate, 'standard')) : null;
 
+        $per_page = empty($conf->global->ECOMMERCE_MAXSIZE_MULTICALL) ? 100 : min($conf->global->ECOMMERCE_MAXSIZE_MULTICALL, 100);
         $filter = ['per_page' => $per_page];
-        if (isset($fromDate) && !empty($fromDate)) $filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
-        if (isset($toDate) && !empty($toDate)) $filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+
+        $from_date =  null;
+        if (isset($fromDate) && !empty($fromDate)) {
+            $from_date = new DateTime(dol_print_date($fromDate, 'standard'));
+            // Not available (yet) for orders
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['after'] = dol_print_date($fromDate - (24 * 60 * 60), 'dayhourrfc');
+        }
+
+        $to_date = null;
+        if (isset($toDate) && !empty($toDate)) {
+            $to_date = new DateTime(dol_print_date($toDate, 'standard'));
+            // Not available (yet) for orders
+            // https://github.com/woocommerce/wc-api-dev/issues/65
+            //$filter['before'] = dol_print_date($toDate + (24 * 60 * 60), 'dayhourrfc');
+        }
 
         while (true) {
             try {
