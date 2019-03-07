@@ -1,5 +1,10 @@
 # ChangeLog
 
+## 4.1.5.0
+
+* Correction de l'accès à l'administration d'un site
+* Correction de la synchronisation (filtrage par date de modification non opérationnel dans l'API WC 3.5)
+
 ## 4.1.4.0
 
 * Correction de la synchronisation des variantes de produits
